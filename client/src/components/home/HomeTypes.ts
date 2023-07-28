@@ -12,12 +12,12 @@ interface rooms {
 
 export interface homeProps {
     name: string,
-    rooms: rooms | []
+    rooms: rooms[] | []
 }
 
 export interface jsonUser {
     name: string,
-    rooms: rooms | [] ,
+    rooms: rooms[] | [] ,
     token?: boolean,
     msg?: string,
     valid?: boolean

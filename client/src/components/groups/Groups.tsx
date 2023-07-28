@@ -1,6 +1,8 @@
 import './Groups.css'
 
-const Groups = ():JSX.Element => {
+import { roomProp } from './groupstypes'
+
+const Groups:React.FC<roomProp> = ({rooms}):JSX.Element => {
   return (
     <div id='Groups' className='flcol'>Groups</div>
   )
