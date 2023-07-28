@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Prompt&family=Raleway:wght@500&display=swap');
 html , body ,#root {
     height: 100%;
 }
@@ -23,6 +24,9 @@ html , body ,#root {
 }
 .tcen {
     text-align: center;
+}
+.f1 {
+    flex: 1;
 }
 
 .border {
