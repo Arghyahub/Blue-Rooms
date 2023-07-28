@@ -1,0 +1,67 @@
+html , body ,#root {
+    height: 100%;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.flrow {
+    display: flex;
+    flex-direction: row;
+}
+.flcol {
+    display: flex;
+    flex-direction: column;
+}
+
+.jcen {
+    justify-content: center;
+}
+.acen {
+    align-items: center;
+}
+.tcen {
+    text-align: center;
+}
+
+.border {
+    border: 2px solid red;
+}
+.curpoi {
+    cursor: pointer;
+}
+
+.h100 {
+    height: 100%;
+}
+.w100 {
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif;
+}
+p, div {
+    font-family: 'Raleway', sans-serif;
+}
+button {
+    outline: none;
+    border: none;
+    background-color: none;
+    cursor: pointer;
+}
+input, button {
+    font-family: 'Prompt', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.blsha:hover {
+    box-shadow: 0 8px 8px -4px lightblue;
+}
+.grsha:hover {
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}

@@ -1,0 +1,158 @@
+.abs {
+    position: absolute;
+}
+
+.homebg-div {
+    height: 85%;
+    position: relative;
+}
+
+.homebg {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    filter: brightness(50%);
+    z-index: -10;
+}
+
+.home-txt {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.home-txt , .home-head {
+    color: #FAFAFA;
+}
+
+.join-opt {
+    margin-top: 2rem;
+}
+
+.homejoin-btn {
+    margin: 0 1rem;
+    outline:  none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    background-color: #05aeb5;
+    color: white;
+}
+
+.product {
+    min-height: 500px;
+    padding: 1rem;
+}
+.product > h1 {
+    margin: 0 0 2rem 0;
+    color: #05aeb5;
+}
+
+.prod-txt  {
+    max-width: 1000px;
+    text-align: center;
+}
+#about {
+    background-color: #F5F5F6;
+}
+
+.prod-about {
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+    margin-top: 2rem;
+    
+}
+
+
+/* F9FAFE
+314C5F */
+
+#company-perks {
+    background-color: #F9FAFE;
+    min-height: 500px;
+}
+.perks-h1 {
+    color: #314C5F;
+}
+
+.company-ul {
+    margin: 2rem 0;
+}
+
+#job-seeker {
+    min-height: 500px;
+}
+
+.job-h1 {
+    color: #05aeb5;
+}
+
+
+
+/* --------------------------------------Navbar----------------------------------------------- */
+
+.home-nav {
+    height: 45px;
+}
+.home-icon {
+    height: 43px;
+}
+
+.nav-icons {
+    height: 27px;
+}
+.navlog {
+    position: absolute;
+    right: 5px;
+}
+.nav-prof {
+    margin-right: 0.8rem;
+    text-decoration: none;
+}
+.money-clr {
+    color: rgb(1, 165, 1);
+    font-weight: 600;
+}
+.nav-auth {
+    margin-left: 5px;
+    font-weight: 500;
+}
+
+.nav-btn {
+    margin: 0 0.3rem;
+    text-decoration: none;
+    color: rgb(0, 51, 255);
+    font-family: 'Raleway', sans-serif;
+}
+
+.nav-btn:hover {
+    color :rgb(1, 165, 1)
+}
+
+
+/* -----------------------------------Contact-------------------------------------------------- */
+
+#contact {
+    height: 70px;
+    background-color: #314C5F;
+}
+
+.socials {
+    margin: 0 0.5rem;
+    color: #fafafa;
+    text-decoration: none;
+    font-weight: 200;
+}
+
+.cont-head {
+    color: #bff3f5;
+}
+
+@media screen and (max-width: 450px) {
+    .socials {
+        font-size: 0.8rem;
+    }
+    .socials > img {
+        height: 20px;
+    }
+}
