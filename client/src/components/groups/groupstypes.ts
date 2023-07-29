@@ -3,7 +3,7 @@ interface msgGroup {
     msg : string
 }
 
-interface rooms {
+export interface rooms {
     group: boolean,
     name: string[],
     latestMsg: number,

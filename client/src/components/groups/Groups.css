@@ -2,3 +2,8 @@
     width: 40%;
     border: 1px solid red;
 }
+
+.chat-card {
+    height: 80px;
+    border: 1px solid yellow;
+}

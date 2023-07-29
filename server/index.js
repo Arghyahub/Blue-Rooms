@@ -85,7 +85,7 @@ app.post('/login',async (req,res) => {
 
 
 app.get("/userData",auth,(req,res)=> {
-    res.status(200).json({name: req.user.name, rooms: []}) ;
+    res.status(200).json({name: req.user.name, rooms: req.user.rooms}) ;
 })
 
 

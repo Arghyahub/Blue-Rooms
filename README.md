@@ -1,3 +1,3 @@
 # Things to do
 
-- [ ] Home design
+- [ ] Change room types, because we are using user rooms

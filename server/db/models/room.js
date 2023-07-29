@@ -2,7 +2,7 @@ const mongoose = require('mongoose') ;
 
 const roomSchema = mongoose.Schema({
     group: Boolean,
-    User_msg: [{ user: String, msg: String }],
+    user_msg: [{ user: String, msg: String }],
     name: [String],
     latest_msg: Number
 }) ;
