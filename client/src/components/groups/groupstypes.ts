@@ -1,13 +1,6 @@
-interface msgGroup {
-    uName: string,
-    msg : string
-}
-
 export interface rooms {
-    group: boolean,
-    name: string[],
-    latestMsg: number,
-    msg: msgGroup[]
+    roomid: string,
+    last_vis: number
 }
 
 export interface roomProp {
