@@ -1,6 +1,7 @@
 #Groups {
     width: 40%;
     border: 1px solid red;
+    overflow-y: scroll;
 }
 
 .chat-card {

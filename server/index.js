@@ -88,7 +88,21 @@ app.get("/userData",auth,(req,res)=> {
     res.status(200).json({name: req.user.name, rooms: req.user.rooms}) ;
 })
 
+app.post("/getChatData",auth, async (req,res) => {
+    const { roomid } = req.body ;
+    if (!roomid)
+        return res.status(404).json({msg: "roomId not found"}) ;
+    console.log(roomid) ;
+    // Use try catch and find the problem
+    const chatData = await UserModel.findById(roomid) ;
+    if (!chatData){
+        console.log("Wait what") ;
+        return res.status(404).json({msg: "Room not found"}) ;
+    }
+    console.log('exists',chatData,'\n\n') ;
 
+    res.status(200).json(chatData) ;
+})
 
 
 

@@ -17,11 +17,11 @@ const auth = async (req,res,next) => {
         if (!user) {
             return res.status(401).json({msg: "User doesn't exist", token: true, valid: false}) ;
         }
-
+        
         // Attach the user to the req
         req.user = user;
-
-        next() ;
+        
+        return next() ;
     }
     catch(err) {
         return res.status(500).json({msg: "Some error occured", token: true, valid: true}) ;
