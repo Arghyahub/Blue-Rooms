@@ -1,49 +1,66 @@
 import { useEffect, useState } from 'react'
 
 import './Groups.css'
-import { roomProp , chatDatas } from './groupstypes'
+import { roomProp , chatDatas , chatDataJson , userMsg } from './groupstypes'
 
 const backend:string = 'http://localhost:8000' ;
 
-const Groups:React.FC<roomProp> = ({rooms}):JSX.Element => {
+const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
   const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;
-
-  const getChatData = ():void => {
-    try {
-      rooms.forEach(async ({roomid}) => {
-        const token:string|null = localStorage.getItem('jwt') ;
-        if (!token) {
-          return;
-        }
-        const res = await fetch(`${backend}/getChatData`,{
-          method:'POST',
-          headers: {
-            Authorization : token,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({roomid}) 
-        })
-
-        const jsonData = await res.json() ;
-        if (jsonData.user_msg)
-          setChatData([...ChatData,jsonData]) ;
-      })
-    }
-    catch(err) {
-      console.log('error in getting chats', err);
-    }
-  }
-
+  
   useEffect(() => {
+    const getChatData = async ():Promise<void> => {
+      try {
+        const allChats:chatDataJson[] = [] ;
+
+        for (let i=0; i<rooms.length; i++) {
+          const {roomid} = rooms[i] ;
+
+          const token:string|null = localStorage.getItem('jwt') ;
+          if (!token) {
+            return;
+          }
+          const res:Response = await fetch(`${backend}/getChatData`,{
+            method:'POST',
+            headers: {
+              Authorization : token,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({roomid}) 
+          })
+  
+          const jsonData:chatDataJson = await res.json() ;
+          if (jsonData.user_msg)
+            allChats.push(jsonData) ; 
+        }
+        setChatData([...allChats]) ;
+      }
+      catch(err) {
+        console.log('error in getting chats', err);
+      }
+    }
     getChatData() ;
   }, [])
-  
-  console.log(ChatData) ;
+
+  const nameResolve = (nameArr:string[]):string => {
+    console.log(name,nameArr) ;
+    if (nameArr.length==1) return nameArr[0] ;
+    return ((nameArr[0]===name)? nameArr[1] : nameArr[0]) ;
+  }
+
+  const getLastMsg = (userMsg:userMsg[]) => {
+    const size = userMsg.length ;
+    return `${userMsg[size-1].user} : ${userMsg[size-1].msg.substring(0,10)}...`
+  }
+
 
   return (
     <div id='Groups' className='flcol'>
-      {ChatData.map((elem) => (
-        <div>Hemlo</div>
+      {ChatData.map((elem,ind) => (
+        <div key={`chats${ind}`} className='chat-card' >
+          <p>{`${nameResolve(elem.name)}`}</p>
+          <p>{`${getLastMsg(elem.user_msg)}`}</p>
+        </div>
       ))}
     </div>
   )

@@ -4,17 +4,28 @@ export interface rooms {
 }
 
 export interface roomProp {
-    rooms: rooms[] | []
+    rooms: rooms[] | [] ,
+    name: string
 }
 
-interface userChats {
-    user: string, 
+export interface userMsg {
+    _id: string,
+    user: string,
     msg: string
 }
 
 export interface chatDatas {
+    _id: string,
     group: boolean,
-    user_msg: userChats[] | [] ,
+    user_msg: userMsg[] | [],
+    name: string[],
+    latest_msg: number
+}
+
+export interface chatDataJson {
+    _id: string,
+    group: boolean,
+    user_msg: userMsg[] | [],
     name: string[],
     latest_msg: number
 }

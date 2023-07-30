@@ -13,7 +13,7 @@ const Home:React.FC<homeProps> = ( {name , rooms} ) => {
       <Navbar />
 
       <div className="group-chat flrow f1 w100">
-        <Groups rooms={rooms} />
+        <Groups rooms={rooms} name={name} />
         <Chat />
       </div>
 
