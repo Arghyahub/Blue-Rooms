@@ -5,3 +5,9 @@
 #standard-basic {
     margin: 0;
 }
+
+.search-btn {
+    outline: none;
+    border: none;
+    background-color: #fff;
+}

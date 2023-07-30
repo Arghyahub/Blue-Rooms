@@ -90,17 +90,40 @@ app.get("/userData",auth,(req,res)=> {
 
 app.post("/getChatData",auth, async (req,res) => {
     const { roomid } = req.body ;
-    if (!roomid)
-        return res.status(404).json({msg: "roomId not found"}) ;
-    console.log(roomid) ;
-    // Use try catch and find the problem
-    const chatData = await RoomModel.findById(roomid) ;
-    if (!chatData){
-        return res.status(404).json({msg: "Room not found"}) ;
+    if (!roomid){
+        return res.status(404).json({err: "roomId not found"}) ;
     }
-    console.log('exists',chatData,'\n\n') ;
+    // Use try catch and find the problem
+    try {
+        const chatData = await RoomModel.findById(roomid) ;
+        if (!chatData){
+            return res.status(404).json({msg: "Room not found"}) ;
+        }
+    
+        res.status(200).json(chatData) ;
+    }
+    catch(err) {
+        console.log(err) ;
+        res.status(405).json({err: "Data not found"}) ;
+    }
+});
 
-    res.status(200).json(chatData) ;
+app.post("/searchUser", async (req,res)=> {
+    const { userName } = req.body ;
+    console.log(userName) ;
+    if (!userName){
+        return res.status(404).json({err: "Insert a username"}) ;
+    }
+    try {
+        const friend = await UserModel.findOne({name: userName}) ;
+        if (!friend){
+            return res.status(404).json({err: "User not found"}) ;
+        }
+        res.status(200).json({name: userName, id: friend._id}) ;
+    }
+    catch(err){
+        console.log(err) ;
+    }
 })
 
 

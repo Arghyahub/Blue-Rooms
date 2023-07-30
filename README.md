@@ -1,3 +1,3 @@
 # Things to do
 
-- [ ] Implement search and add feature
+- [ ] Implement Add a friend

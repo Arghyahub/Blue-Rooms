@@ -6,16 +6,16 @@ import { roomProp , chatDatas , chatDataJson , userMsg } from './groupstypes'
 const backend:string = 'http://localhost:8000' ;
 
 const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
-  const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;
+  const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;  
   
   useEffect(() => {
     const getChatData = async ():Promise<void> => {
       try {
         const allChats:chatDataJson[] = [] ;
-
+  
         for (let i=0; i<rooms.length; i++) {
           const {roomid} = rooms[i] ;
-
+  
           const token:string|null = localStorage.getItem('jwt') ;
           if (!token) {
             return;
@@ -40,10 +40,9 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
       }
     }
     getChatData() ;
-  }, [])
+  }, [rooms])
 
   const nameResolve = (nameArr:string[]):string => {
-    console.log(name,nameArr) ;
     if (nameArr.length==1) return nameArr[0] ;
     return ((nameArr[0]===name)? nameArr[1] : nameArr[0]) ;
   }
