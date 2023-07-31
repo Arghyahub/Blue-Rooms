@@ -1,3 +1,3 @@
 # Things to do
 
-- [ ] Implement Add a friend
+- [ ] Handle room exists and add send data to frontend

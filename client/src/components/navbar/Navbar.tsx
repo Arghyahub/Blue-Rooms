@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import './Navbar.css'
-import { friendJson } from "./navbarTypes";
+import { friendJson , addFriendValid } from "./navbarTypes";
 
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
@@ -20,7 +20,9 @@ const Navbar = (): JSX.Element => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    // if (FriendData.name && FriendData.id){
+      setAnchorEl(event.currentTarget);
+    // }
   };
 
   const handleClose = () => {
@@ -51,6 +53,37 @@ const Navbar = (): JSX.Element => {
       console.log(err);
     }
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addFriend = async (e:any):Promise<void> => {
+    e.preventDefault() ;
+    const friendId = FriendData.id ;
+    const token = localStorage.getItem('jwt') ;
+    if (!friendId || friendId==='' || !token) return;
+    try {
+      const resp:Response = await fetch(`${backend}/addFriend`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({friendId})
+      }) 
+      const json:addFriendValid = await resp.json() ;
+      if (json.success){
+        // Append to chat group
+      }
+      if (json.err) {
+        // Display error
+        alert(`Error adding ${json.err}`) ;
+      }
+    }
+    catch(err) {
+      console.log(err) ;
+    }
+  }
+
+
   return (
     <div id='Navbar' className="flrow acen">
       <p>BlueRooms</p>
@@ -71,10 +104,12 @@ const Navbar = (): JSX.Element => {
               top: "0.6rem"
             }}
           >
-              <div className="flrow">
+              <form onSubmit={addFriend} className="flrow">
                 <p>{FriendData.name}</p>
-                <AddCircleIcon className="curpoi" style={{color: "aquamarine"}} />
-              </div>
+                <button type="submit" className="addf-btn">
+                  <AddCircleIcon className="curpoi" style={{color: "aquamarine"}} />
+                </button>
+              </form>
           </Popover>
         )}
 

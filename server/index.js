@@ -110,7 +110,6 @@ app.post("/getChatData",auth, async (req,res) => {
 
 app.post("/searchUser", async (req,res)=> {
     const { userName } = req.body ;
-    console.log(userName) ;
     if (!userName){
         return res.status(404).json({err: "Insert a username"}) ;
     }
@@ -125,6 +124,22 @@ app.post("/searchUser", async (req,res)=> {
         console.log(err) ;
     }
 })
+
+app.post('/addFriend',auth, async (req,res)=> {
+    const { friendId } = req.body ;
+    if (!friendId || friendId==='') return res.status(404).json({ success: false  ,err: "No such user" }) ;
+
+    // 1. Check if a room already exists
+    const roomExist = await RoomModel.findOne({ userIds: { $all: [req.user.id, friendId] , $size: 2 } }) ;
+    if (roomExist) console.log("Room exists") ;
+    // User.find({ users: { $all: [1, 2], $size: 2 } }
+
+    // 2. If not add a room to both users id
+    
+    // 3. Return room added, with roomId to add to ui
+    res.status(200).json({success: false, err: "testing"}) ;
+})
+
 
 
 app.listen(port,()=> {
