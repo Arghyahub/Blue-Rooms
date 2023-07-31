@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { useRecoilValue } from 'recoil';
 
 import Home from "./Home";
 import { jsonUser } from "./HomeTypes";
-import { userAdded } from '../../Atom';
 const backend:string = "http://localhost:8000" ;
 
 
@@ -21,7 +19,6 @@ const NotFound = () => {
 const HomeMid = ():JSX.Element => {
   const [UserExist, setUserExist] = useState<boolean>(false) ;
   const [UserData, setUserData] = useState<jsonUser>({name: '' , rooms: [] }) ;
-  const FriendAdd = useRecoilValue<string>(userAdded);
 
   const getData = async ():Promise<void> => {
     const token:string|null = localStorage.getItem('jwt') ;
@@ -63,8 +60,7 @@ const HomeMid = ():JSX.Element => {
 
   useEffect(() => {
     getData() ;
-  }, [FriendAdd])
-  
+  }, [])
 
   return (
     <>

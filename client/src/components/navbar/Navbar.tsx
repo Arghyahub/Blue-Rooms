@@ -1,5 +1,7 @@
 import { useState } from "react"
+import { useRecoilState } from "recoil";
 
+import { userAdded } from "../../Atom";
 import './Navbar.css'
 import { friendJson , addFriendValid } from "./navbarTypes";
 
@@ -16,6 +18,8 @@ const backend:string = "http://localhost:8000" ;
 const Navbar = (): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [FriendData, setFriendData] = useState<friendJson>({name:'' , id:''}) ;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [AddRoom, setAddRoom] = useRecoilState<string>(userAdded) ;
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -47,7 +51,6 @@ const Navbar = (): JSX.Element => {
       if (json.name && json.id) {
         setFriendData({name: json.name, id: json.id}) ;
       }
-      console.log(json) ;
     }
     catch (err) {
       console.log(err);
@@ -57,9 +60,9 @@ const Navbar = (): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addFriend = async (e:any):Promise<void> => {
     e.preventDefault() ;
-    const friendId = FriendData.id ;
+    const friendName = FriendData.name ;
     const token = localStorage.getItem('jwt') ;
-    if (!friendId || friendId==='' || !token) return;
+    if (!friendName || friendName==='' || !token) return;
     try {
       const resp:Response = await fetch(`${backend}/addFriend`, {
         method: 'POST',
@@ -67,15 +70,17 @@ const Navbar = (): JSX.Element => {
           'Content-Type': 'application/json',
           'Authorization': token
         },
-        body: JSON.stringify({friendId})
+        body: JSON.stringify({friendName})
       }) 
       const json:addFriendValid = await resp.json() ;
-      if (json.success){
-        // Append to chat group
+      console.log(json) ;
+      if (json.success && json.roomId){
+        // alert("Friend Added") ;
+        setAddRoom(json.roomId) ;
       }
       if (json.err) {
         // Display error
-        alert(`Error adding ${json.err}`) ;
+        alert(json.err) ;
       }
     }
     catch(err) {

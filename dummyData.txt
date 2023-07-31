@@ -1,0 +1,10 @@
+{
+    _id: ObjectId("64c4ab5e1246af8f80782edf"),
+    group: false,
+    user_msg: [
+      { user: 'best', msg: 'Personal baat' },
+      { user: 'test', msg: 'Hanji' }
+    ],
+    name: [ 'test', 'best' ],
+    latest_msg: 2003,
+}

@@ -126,18 +126,35 @@ app.post("/searchUser", async (req,res)=> {
 })
 
 app.post('/addFriend',auth, async (req,res)=> {
-    const { friendId } = req.body ;
-    if (!friendId || friendId==='') return res.status(404).json({ success: false  ,err: "No such user" }) ;
+    const { friendName } = req.body ;
+    if (!friendName || friendName==='') return res.status(404).json({ success: false  ,err: "No such user" }) ;
 
-    // 1. Check if a room already exists
-    const roomExist = await RoomModel.findOne({ userIds: { $all: [req.user.id, friendId] , $size: 2 } }) ;
-    if (roomExist) console.log("Room exists") ;
-    // User.find({ users: { $all: [1, 2], $size: 2 } }
+    try {
+        // 1. Check if a room already exists
+        const roomExist = await RoomModel.findOne({ name: { $all: [req.user.name, friendName] , $size: 2 } }) ;
+        if (roomExist) {
+            return res.status(200).json({success: false, err: "You are already connected"}) ;
+        }
+        // 2. If not add a room to both users id
+        const currTime = new Date().getTime() ;
+        const newRoom = new RoomModel({ group: false, user_msg: [], name: [req.user.name,friendName], latest_msg: currTime }) ;
+        await newRoom.save() ;
 
-    // 2. If not add a room to both users id
-    
-    // 3. Return room added, with roomId to add to ui
-    res.status(200).json({success: false, err: "testing"}) ;
+        // 2.1 Add group Id to both contact's room list
+        const user1 = await UserModel.findOne({name: req.user.name}) ;
+        const user2 = await UserModel.findOne({name: friendName}) ;
+        user1.rooms.unshift({roomid: newRoom._id, last_vis: currTime}) ;
+        await user1.save() ;
+        user2.rooms.unshift({roomid: newRoom._id, last_vis: currTime}) ;
+        await user2.save() ;
+        
+        // 3. Return room added, with roomId to add to ui
+        res.status(200).json({success: true, roomId: newRoom._id}) ;
+    }
+    catch(err) {
+        console.log(err) ;
+        res.status(405).json({success: false, err: "Some error occurred"}) ;
+    }
 })
 
 

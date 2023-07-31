@@ -5,5 +5,6 @@ export interface friendJson {
 
 export interface addFriendValid {
     success: boolean;
-    err?: string
+    err?: string,
+    roomId?: string
 }
