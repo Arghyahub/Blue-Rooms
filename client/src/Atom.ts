@@ -5,5 +5,33 @@ const userAdded:RecoilState<string> = atom({
     default: '', // default value (aka initial value)
 });
 
+const chatDummy = {
+    _id: '',
+    group: false,
+    user_msg: [{
+        _id: '', user: '', msg: ''
+    }],
+    name: [''],
+    latest_msg: 0,
+}
 
-export { userAdded } ;
+interface userMsg {
+    _id: string,
+    user: string,
+    msg: string
+}
+
+interface chatType {
+    _id: string;
+    group: boolean;
+    user_msg: [] | userMsg[] ;
+    name: [] | string[];
+    latest_msg: number;
+}
+  
+const currOpenChat: RecoilState<chatType> = atom({
+    key: 'currOpenChat',
+    default: chatDummy
+});
+
+export { userAdded , currOpenChat } ;
