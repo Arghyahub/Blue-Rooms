@@ -10,6 +10,7 @@ const backend:string = 'http://localhost:8000' ;
 const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
   const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;  
   const newGroup = useRecoilValue<string>(userAdded) ;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [OpenChat, setOpenChat] = useRecoilState(currOpenChat) ;
 
   const token = localStorage.getItem('jwt') as string ;
@@ -78,8 +79,7 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
   return (
     <div id='Groups' className='flcol'>
       {ChatData.map((elem,ind) => (
-        // <div key={`chats${ind}`} className='chat-card curpoi' onClick={() => setOpenChat()} >
-        <div key={`chats${ind}`} className='chat-card curpoi'>
+        <div key={`chats${ind}`} className='chat-card curpoi'onClick={() => setOpenChat({selected:true, ...elem})}  >
           <p>{`${nameResolve(elem.name)}`}</p>
           <p>{`${getLastMsg(elem.user_msg)}`}</p>
         </div>

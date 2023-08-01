@@ -6,6 +6,7 @@ const userAdded:RecoilState<string> = atom({
 });
 
 const chatDummy = {
+    selected: false,
     _id: '',
     group: false,
     user_msg: [{
@@ -22,11 +23,12 @@ interface userMsg {
 }
 
 interface chatType {
-    _id: string;
-    group: boolean;
-    user_msg: [] | userMsg[] ;
-    name: [] | string[];
-    latest_msg: number;
+    selected: boolean,
+    _id: string,
+    group: boolean,
+    user_msg: [] | userMsg[] ,
+    name: [] | string[],
+    latest_msg: number,
 }
   
 const currOpenChat: RecoilState<chatType> = atom({

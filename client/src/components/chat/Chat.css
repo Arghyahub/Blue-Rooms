@@ -2,3 +2,7 @@
     width: 60%;
     border: 1px solid green;
 }
+
+.myChat {
+    align-items: flex-end;
+}
