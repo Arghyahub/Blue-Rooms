@@ -13,7 +13,7 @@ const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
   }
 
   return (
-    <div id="Chat">
+    <div id="Chat" className='f1'>
       {selectedChat.selected? (
         <div className="selected-chat flcol">
           <p>{`${nameResolve(selectedChat.name)}`}</p>
@@ -25,28 +25,10 @@ const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
           ))}
         </div>
       ): (
-        <h1>Hemlo</h1>
+        <p>Start a chat by clicking on the chat</p>
       )}
     </div>
   )
 }
 
 export default Chat
-
-
-/**
-interface userMsg {
-    _id: string,
-    user: string,
-    msg: string
-}
-
-interface chatType {
-    selected: boolean,
-    _id: string,
-    group: boolean,
-    user_msg: [] | userMsg[] ,
-    name: [] | string[],
-    latest_msg: number,
-}
- */

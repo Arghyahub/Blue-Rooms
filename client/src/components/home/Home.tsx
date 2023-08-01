@@ -3,6 +3,7 @@ import {homeProps} from './HomeTypes'
 import Navbar from '../navbar/Navbar';
 import Groups from '../groups/Groups';
 import Chat from '../chat/Chat';
+import SendChat from '../sendChat/SendChat';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Home:React.FC<homeProps> = ( {name , rooms} ) => {
@@ -14,7 +15,11 @@ const Home:React.FC<homeProps> = ( {name , rooms} ) => {
 
       <div className="group-chat flrow f1 w100">
         <Groups rooms={rooms} name={name} />
-        <Chat name={name} />
+
+        <div className="chat-sec flcol f1">
+          <Chat name={name} />
+          <SendChat/>
+        </div>
       </div>
 
     </div>
