@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRecoilValue , useRecoilState } from 'recoil';
 
-import { userAdded , currOpenChat } from '../../Atom';
+import { userAdded , currOpenChat , chatDataStore } from '../../Atom';
 import './Groups.css'
 import { roomProp , chatDatas , chatDataJson , userMsg } from './groupstypes'
 
 const backend:string = 'http://localhost:8000' ;
 
 const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
-  const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;  
+  const [ChatData, setChatData] = useRecoilState(chatDataStore) ;  
+  // const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;  
   const newGroup = useRecoilValue<string>(userAdded) ;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [OpenChat, setOpenChat] = useRecoilState(currOpenChat) ;
@@ -18,7 +19,7 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
   useEffect(() => {
     const getChatData = async ():Promise<void> => {
       try {
-        const allChats:chatDataJson[] = [] ;
+        const allChats:chatDatas[] = [] ;
   
         for (let i=0; i<rooms.length; i++) {
           const {roomid} = rooms[i] ;
@@ -32,7 +33,7 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
             body: JSON.stringify({roomid}) 
           })
   
-          const jsonData:chatDataJson = await res.json() ;
+          const jsonData:chatDatas = await res.json() ;
           if (jsonData.user_msg)
             allChats.unshift(jsonData) ; 
         }
@@ -58,7 +59,7 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
         body: JSON.stringify({roomid: groupId}) 
       })
       const jsonData:chatDataJson = await res.json() ;
-      console.log(jsonData) ;
+      // console.log(jsonData) ;
       setChatData([jsonData,...ChatData]) ;
     }
     insertNewGroup();

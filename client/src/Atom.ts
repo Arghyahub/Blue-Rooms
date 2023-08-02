@@ -27,7 +27,7 @@ interface chatType {
     _id: string,
     group: boolean,
     user_msg: [] | userMsg[] ,
-    name: [] | string[],
+    name: string[],
     latest_msg: number,
 }
   
@@ -36,4 +36,25 @@ const currOpenChat: RecoilState<chatType> = atom({
     default: chatDummy
 });
 
-export { userAdded , currOpenChat } ;
+
+interface userMsg {
+    _id: string,
+    user: string,
+    msg: string
+}
+
+interface chatDatas {
+    _id: string,
+    group: boolean,
+    user_msg: userMsg[] | [],
+    name: string[],
+    latest_msg: number
+}
+
+const chatDataStore: RecoilState< chatDatas[] | []> = atom({
+    key: 'chatDataStore',
+    default: [] as chatDatas[],
+});
+
+
+export { userAdded , currOpenChat , chatDataStore } ;

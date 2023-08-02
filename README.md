@@ -1,3 +1,4 @@
 # Things to do
 
-- [ ] Handle Chat open in Group.tsx and atom
+- [ ] Fast data display complete
+- [ ] Fix Name error and prop propagation
