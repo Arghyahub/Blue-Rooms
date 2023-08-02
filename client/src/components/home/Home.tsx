@@ -1,4 +1,7 @@
+import { useRecoilValue } from 'recoil';
+
 import {homeProps} from './HomeTypes'
+import { currOpenChat } from '../../Atom';
 
 import Navbar from '../navbar/Navbar';
 import Groups from '../groups/Groups';
@@ -7,7 +10,7 @@ import SendChat from '../sendChat/SendChat';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Home:React.FC<homeProps> = ( {name , rooms} ) => {
-
+  const selectedChat = useRecoilValue(currOpenChat) ;
   return (
     <div id="Home" className='flcol h100 w100'>
       
@@ -18,7 +21,9 @@ const Home:React.FC<homeProps> = ( {name , rooms} ) => {
 
         <div className="chat-sec flcol f1">
           <Chat name={name} />
-          <SendChat/>
+          {selectedChat.selected && (
+            <SendChat />
+          )}
         </div>
       </div>
 

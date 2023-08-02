@@ -157,6 +157,19 @@ app.post('/addFriend',auth, async (req,res)=> {
     }
 })
 
+app.post('/appendChat',auth, async (req,res) => {
+    const {groupId , chatMsg } = req.body ;
+    if (!groupId || !chatMsg) return res.status(500).json({err: "Some error occured"}) ;
+
+    try {
+        await RoomModel.updateOne({_id: groupId}, { $push : { user_msg: {user: req.user.name , msg: chatMsg} } }) ;
+        return res.status(200).json({success: true}) ;
+    }
+    catch(err) {
+        console.log(err) ;
+        return res.status(405).json({err: "Some error occurred"}) ;
+    }
+})
 
 
 app.listen(port,()=> {
