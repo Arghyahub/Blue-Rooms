@@ -137,7 +137,7 @@ app.post('/addFriend',auth, async (req,res)=> {
         }
         // 2. If not add a room to both users id
         const currTime = new Date().getTime() ;
-        const newRoom = new RoomModel({ group: false, user_msg: [], latest_msg: currTime }) ;
+        const newRoom = new RoomModel({ group: false, user_msg: [],members: [req.user.name, friendName] ,latest_msg: currTime }) ;
         await newRoom.save() ;
 
         // 2.1 Add group Id to both contact's room list
@@ -172,17 +172,24 @@ app.post('/appendChat',auth, async (req,res) => {
 })
 
 
-app.listen(port,()=> {
+const server = app.listen(port,()=> {
     console.log(`Server running on http://localhost:${port}`) ;
 })
 
-// const io = require('socket.io')(server, {
-//     pingTimeout: 120000,
-//     cors: {
-//         origin: "http://localhost:5173"
-//     }
-// })
+const io = require('socket.io')(server, {
+    pingTimeout: 120000,
+    cors: {
+        origin: "http://localhost:5173"
+    }
+})
 
-// io.on('connection', (socket)=> {
-//     console.log("User connected") ;
-// })
+io.on('connection', (socket)=> {
+    // console.log("User connected" + socket.id) ;
+    socket.on('join',(roomid)=> {
+        socket.join(roomid) ;
+    })
+
+    socket.on('new-chat',({chatId, sender, msg}) => {
+        socket.to(chatId).emit('recieved-msg',chatId,sender,msg) ;
+    })
+})

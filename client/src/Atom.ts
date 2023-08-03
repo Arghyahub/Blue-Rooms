@@ -34,6 +34,7 @@ interface chatType {
     group: boolean,
     user_msg: [] | userMsg[] ,
     name: string,
+    members: string[],
     latest_msg: number,
 }
 

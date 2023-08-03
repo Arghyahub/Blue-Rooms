@@ -19,6 +19,7 @@ export interface chatDatas {
     _id: string,
     group: boolean,
     user_msg: userMsg[] | [],
+    members: string,
     latest_msg: number
 }
 

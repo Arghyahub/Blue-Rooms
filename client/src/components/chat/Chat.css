@@ -1,6 +1,8 @@
 #Chat {
-    /* width: 60%; */
     border: 1px solid green;
+    overflow-y: scroll;
+    flex-grow: 1;
+    flex-basis: 0;
 }
 
 .myChat {

@@ -25,7 +25,7 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
       })
 
       const jsonData: chatDatas = await res.json();
-      setOpenChat({ selected: true, _id: jsonData._id, group: jsonData.group, user_msg: jsonData.user_msg, name: roomName, latest_msg: jsonData.latest_msg  }) ;
+      setOpenChat({ selected: true, _id: jsonData._id, group: jsonData.group, user_msg: jsonData.user_msg, name: roomName, members: jsonData.members ,latest_msg: jsonData.latest_msg  }) ;
     }
     catch (err) {
     console.log('error in getting chats', err);

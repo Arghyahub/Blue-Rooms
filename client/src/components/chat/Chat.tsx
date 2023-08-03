@@ -1,25 +1,15 @@
-import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
-// import { io } from 'socket.io-client'
 
 import './Chat.css'
 import { currOpenChat } from '../../Atom'
 import { chatProp } from './chatTypes'
 
 
-// const backend = 'http://localhost:8000' ;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// let socket;
-
 const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
   const selectedChat = useRecoilValue(currOpenChat) ;
 
-  useEffect(() => {
-    // socket = io(backend) ;
-  }, [])
-
   return (
-    <div id="Chat" className='f1'>
+    <div id="Chat">
       {selectedChat.selected? (
         <div className="selected-chat flcol">
           <p className='head-name'>{selectedChat.name}</p>

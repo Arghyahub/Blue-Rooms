@@ -19,7 +19,7 @@ const Home:React.FC<homeProps> = ( {name , rooms} ) => {
       <div className="group-chat flrow f1 w100">
         <Groups rooms={rooms} name={name} />
 
-        <div className="chat-sec flcol f1">
+        <div className="chat-sec flcol w100">
           <Chat name={name} />
           {selectedChat.selected && (
             <SendChat name={name} />
