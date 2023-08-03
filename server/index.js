@@ -175,3 +175,14 @@ app.post('/appendChat',auth, async (req,res) => {
 app.listen(port,()=> {
     console.log(`Server running on http://localhost:${port}`) ;
 })
+
+// const io = require('socket.io')(server, {
+//     pingTimeout: 120000,
+//     cors: {
+//         origin: "http://localhost:5173"
+//     }
+// })
+
+// io.on('connection', (socket)=> {
+//     console.log("User connected") ;
+// })

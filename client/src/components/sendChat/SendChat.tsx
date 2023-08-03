@@ -1,13 +1,13 @@
 import { useRecoilState } from "recoil";
 
-import { jsonResp } from "./sendChatTypes";
+import { jsonResp , sendChatProp } from "./sendChatTypes";
 import "./SendChat.css"
 import SendIcon from '@mui/icons-material/Send';
 import { currOpenChat , chatDataStore } from "../../Atom";
 
 const backend = "http://localhost:8000" ;
 
-const SendChat = () => {
+const SendChat:React.FC<sendChatProp> = ({name}) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currChat, setCurrChat] = useRecoilState(currOpenChat) ;
   const token = localStorage.getItem('jwt') as string ;
@@ -35,7 +35,7 @@ const SendChat = () => {
 
       const chatRoomInd = ChatData.findIndex(chatRoom => chatRoom._id===currChat._id) ;
       if (chatRoomInd!=-1){
-        const updatedChat ={ ...ChatData[chatRoomInd] , user_msg: [...(ChatData[chatRoomInd].user_msg) , { _id: 'some' ,user: 'shyam' , msg: chatInput.value }] } ;
+        const updatedChat ={ ...ChatData[chatRoomInd] , user_msg: [...(ChatData[chatRoomInd].user_msg) , { _id: '' ,user: name , msg: chatInput.value }] } ;
         const newChatData = [
           updatedChat,
           ...ChatData.slice(0,chatRoomInd),

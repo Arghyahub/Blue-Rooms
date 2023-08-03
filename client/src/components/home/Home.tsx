@@ -22,7 +22,7 @@ const Home:React.FC<homeProps> = ( {name , rooms} ) => {
         <div className="chat-sec flcol f1">
           <Chat name={name} />
           {selectedChat.selected && (
-            <SendChat />
+            <SendChat name={name} />
           )}
         </div>
       </div>

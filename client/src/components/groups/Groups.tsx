@@ -44,6 +44,7 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
       }
     }
     getChatData() ;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rooms])
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
       setChatData([jsonData,...ChatData]) ;
     }
     insertNewGroup();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newGroup])
 
   const nameResolve = (nameArr:string[]):string => {

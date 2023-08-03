@@ -1,11 +1,23 @@
+import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
+// import { io } from 'socket.io-client'
 
 import './Chat.css'
 import { currOpenChat } from '../../Atom'
 import { chatProp } from './chatTypes'
 
+
+// const backend = 'http://localhost:8000' ;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// let socket;
+
 const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
   const selectedChat = useRecoilValue(currOpenChat) ;
+
+  useEffect(() => {
+    // socket = io(backend) ;
+  }, [])
+  
 
   const nameResolve = (nameArr:string[]):string => {
     if (nameArr.length==1) return nameArr[0] ;
