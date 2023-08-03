@@ -5,16 +5,22 @@ const userAdded:RecoilState<string> = atom({
     default: '', // default value (aka initial value)
 });
 
-const chatDummy = {
-    selected: false,
-    _id: '',
-    group: false,
-    user_msg: [{
-        _id: '', user: '', msg: ''
-    }],
-    name: [''],
-    latest_msg: 0,
+interface rooms {
+    roomid: string,
+    roomName: string,
+    last_vis: number
 }
+
+interface jsonUser {
+    name: string,
+    rooms: rooms[] ,
+}
+
+const userRooms:RecoilState<jsonUser> = atom({
+    key: 'userData',
+    default:{name:'',rooms:[]}  as jsonUser
+})
+
 
 interface userMsg {
     _id: string,
@@ -27,13 +33,13 @@ interface chatType {
     _id: string,
     group: boolean,
     user_msg: [] | userMsg[] ,
-    name: string[],
+    name: string,
     latest_msg: number,
 }
-  
+
 const currOpenChat: RecoilState<chatType> = atom({
     key: 'currOpenChat',
-    default: chatDummy
+    default: {selected: false} as chatType,
 });
 
 
@@ -57,4 +63,4 @@ const chatDataStore: RecoilState< chatDatas[] | []> = atom({
 });
 
 
-export { userAdded , currOpenChat , chatDataStore } ;
+export { userAdded , currOpenChat , chatDataStore , userRooms } ;

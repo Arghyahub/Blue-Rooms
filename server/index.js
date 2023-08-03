@@ -137,15 +137,15 @@ app.post('/addFriend',auth, async (req,res)=> {
         }
         // 2. If not add a room to both users id
         const currTime = new Date().getTime() ;
-        const newRoom = new RoomModel({ group: false, user_msg: [], name: [req.user.name,friendName], latest_msg: currTime }) ;
+        const newRoom = new RoomModel({ group: false, user_msg: [], latest_msg: currTime }) ;
         await newRoom.save() ;
 
         // 2.1 Add group Id to both contact's room list
         const user1 = await UserModel.findOne({name: req.user.name}) ;
         const user2 = await UserModel.findOne({name: friendName}) ;
-        user1.rooms.unshift({roomid: newRoom._id, last_vis: currTime}) ;
+        user1.rooms.unshift({roomid: newRoom._id, roomName: friendName, last_vis: currTime}) ;
         await user1.save() ;
-        user2.rooms.unshift({roomid: newRoom._id, last_vis: currTime}) ;
+        user2.rooms.unshift({roomid: newRoom._id, roomName: req.user.name, last_vis: currTime}) ;
         await user2.save() ;
         
         // 3. Return room added, with roomId to add to ui

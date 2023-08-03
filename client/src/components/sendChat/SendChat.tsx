@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import { jsonResp , sendChatProp } from "./sendChatTypes";
 import "./SendChat.css"
 import SendIcon from '@mui/icons-material/Send';
-import { currOpenChat , chatDataStore } from "../../Atom";
+import { currOpenChat } from "../../Atom";
 
 const backend = "http://localhost:8000" ;
 
@@ -11,8 +11,6 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currChat, setCurrChat] = useRecoilState(currOpenChat) ;
   const token = localStorage.getItem('jwt') as string ;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [ChatData, setChatData] = useRecoilState(chatDataStore) ;  
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChatSend = async (e:any) => {
@@ -33,17 +31,12 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
         // allert the user
       }
 
-      const chatRoomInd = ChatData.findIndex(chatRoom => chatRoom._id===currChat._id) ;
-      if (chatRoomInd!=-1){
-        const updatedChat ={ ...ChatData[chatRoomInd] , user_msg: [...(ChatData[chatRoomInd].user_msg) , { _id: '' ,user: name , msg: chatInput.value }] } ;
-        const newChatData = [
-          updatedChat,
-          ...ChatData.slice(0,chatRoomInd),
-          ...ChatData.slice(chatRoomInd+1)
-        ]
-        setChatData([...newChatData]);
-        setCurrChat({selected: true,...updatedChat}) ;
-      }
+      const newCurrChatMsg = [...currChat.user_msg] ;
+      newCurrChatMsg.push({_id: '', user: name, msg: chatInput.value}) ;
+      setCurrChat(prevState => ({
+        ...prevState,
+        user_msg: newCurrChatMsg
+      }))
     }
     catch(err) {
       console.log("error : ",err) ;

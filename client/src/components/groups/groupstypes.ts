@@ -1,5 +1,6 @@
 export interface rooms {
     roomid: string,
+    roomName: string,
     last_vis: number
 }
 
@@ -18,7 +19,6 @@ export interface chatDatas {
     _id: string,
     group: boolean,
     user_msg: userMsg[] | [],
-    name: string[],
     latest_msg: number
 }
 

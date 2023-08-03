@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useRecoilState } from "recoil";
 
-import { userAdded } from "../../Atom";
+import { userRooms } from "../../Atom";
 import './Navbar.css'
 import { friendJson , addFriendValid } from "./navbarTypes";
 
@@ -16,10 +16,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 const backend:string = "http://localhost:8000" ;
 
 const Navbar = (): JSX.Element => {
+  const [UserData, setUserData] = useRecoilState(userRooms) ;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [FriendData, setFriendData] = useState<friendJson>({name:'' , id:''}) ;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [AddRoom, setAddRoom] = useRecoilState<string>(userAdded) ;
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -73,10 +72,11 @@ const Navbar = (): JSX.Element => {
         body: JSON.stringify({friendName})
       }) 
       const json:addFriendValid = await resp.json() ;
-      console.log(json) ;
       if (json.success && json.roomId){
-        // alert("Friend Added") ;
-        setAddRoom(json.roomId) ;
+        const newData = [...UserData.rooms];
+        newData.unshift({roomid: json.roomId, roomName: friendName, last_vis: new Date().getTime()}) ;
+
+        setUserData({name: UserData.name, rooms: newData}) ;
       }
       if (json.err) {
         // Display error
@@ -125,7 +125,7 @@ const Navbar = (): JSX.Element => {
           </button>
         </form>
 
-        <Badge badgeContent={4} color="primary">
+        <Badge badgeContent={1} color="primary">
           <NotificationsIcon color="action" />
         </Badge>
         <PersonIcon />

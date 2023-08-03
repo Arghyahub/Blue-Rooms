@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { useRecoilState } from "recoil";
 
 import Home from "./Home";
 import { jsonUser } from "./HomeTypes";
+import { userRooms } from "../../Atom";
 const backend:string = "http://localhost:8000" ;
 
 
@@ -18,7 +20,7 @@ const NotFound = () => {
 
 const HomeMid = ():JSX.Element => {
   const [UserExist, setUserExist] = useState<boolean>(false) ;
-  const [UserData, setUserData] = useState<jsonUser>({name: '' , rooms: [] }) ;
+  const [UserData, setUserData] = useRecoilState<jsonUser>(userRooms) ;
 
   const getData = async ():Promise<void> => {
     const token:string|null = localStorage.getItem('jwt') ;

@@ -1,5 +1,6 @@
 interface rooms {
     roomid: string,
+    roomName: string,
     last_vis: number
 }
 

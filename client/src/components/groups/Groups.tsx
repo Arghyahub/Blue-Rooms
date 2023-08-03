@@ -1,94 +1,46 @@
-import { useEffect } from 'react'
-import { useRecoilValue , useRecoilState } from 'recoil';
+import {  useRecoilState } from 'recoil';
 
-import { userAdded , currOpenChat , chatDataStore } from '../../Atom';
+import { currOpenChat } from '../../Atom';
 import './Groups.css'
-import { roomProp , chatDatas , chatDataJson , userMsg } from './groupstypes'
+import { roomProp, chatDatas } from './groupstypes'
 
-const backend:string = 'http://localhost:8000' ;
+const backend: string = 'http://localhost:8000';
 
-const Groups:React.FC<roomProp> = ({rooms , name}):JSX.Element => {
-  const [ChatData, setChatData] = useRecoilState(chatDataStore) ;  
-  // const [ChatData, setChatData] = useState<chatDatas[] | []>([]) ;  
-  const newGroup = useRecoilValue<string>(userAdded) ;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [OpenChat, setOpenChat] = useRecoilState(currOpenChat) ;
+  const [OpenChat, setOpenChat] = useRecoilState(currOpenChat);
 
-  const token = localStorage.getItem('jwt') as string ;
-  
-  useEffect(() => {
-    const getChatData = async ():Promise<void> => {
-      try {
-        const allChats:chatDatas[] = [] ;
-  
-        for (let i=0; i<rooms.length; i++) {
-          const {roomid} = rooms[i] ;
-  
-          const res:Response = await fetch(`${backend}/getChatData`,{
-            method:'POST',
-            headers: {
-              Authorization : token,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({roomid}) 
-          })
-  
-          const jsonData:chatDatas = await res.json() ;
-          if (jsonData.user_msg)
-            allChats.unshift(jsonData) ; 
-        }
-        setChatData([...allChats]) ;
-      }
-      catch(err) {
-        console.log('error in getting chats', err);
-      }
-    }
-    getChatData() ;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rooms])
+  const token = localStorage.getItem('jwt') as string;
 
-  useEffect(() => {
-    const insertNewGroup =async () => {
-      const groupId = newGroup ;
-      if (!groupId || groupId==='') return;
-      const res:Response = await fetch(`${backend}/getChatData`,{
-        method:'POST',
+  const handleCurrOpenChat = async (roomid:string , roomName:string): Promise<void> => {
+    try {
+      const res: Response = await fetch(`${backend}/getChatData`, {
+        method: 'POST',
         headers: {
-          Authorization : token,
+          Authorization: token,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({roomid: groupId}) 
+        body: JSON.stringify({ roomid })
       })
-      const jsonData:chatDataJson = await res.json() ;
-      // console.log(jsonData) ;
-      setChatData([jsonData,...ChatData]) ;
+
+      const jsonData: chatDatas = await res.json();
+      setOpenChat({ selected: true, _id: jsonData._id, group: jsonData.group, user_msg: jsonData.user_msg, name: roomName, latest_msg: jsonData.latest_msg  }) ;
     }
-    insertNewGroup();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newGroup])
-
-  const nameResolve = (nameArr:string[]):string => {
-    if (nameArr.length==1) return nameArr[0] ;
-    return ((nameArr[0]===name)? nameArr[1] : nameArr[0]) ;
+    catch (err) {
+    console.log('error in getting chats', err);
   }
+}
 
-  const getLastMsg = (userMsg:userMsg[]) => {
-    const size = userMsg.length ;
-    if (size===0) return "Start Chat...";
-    return `${userMsg[size-1].user} : ${userMsg[size-1].msg.substring(0,10)}...`
-  }
-
-
-  return (
-    <div id='Groups' className='flcol'>
-      {ChatData.map((elem,ind) => (
-        <div key={`chats${ind}`} className='chat-card curpoi'onClick={() => setOpenChat({selected:true, ...elem})}  >
-          <p>{`${nameResolve(elem.name)}`}</p>
-          <p>{`${getLastMsg(elem.user_msg)}`}</p>
-        </div>
-      ))}
-    </div>
-  )
+return (
+  <div id='Groups' className='flcol'>
+    {rooms.map((elem, ind) => (
+      <div key={`chats${ind}`} className='chat-card curpoi' onClick={() => handleCurrOpenChat(elem.roomid , elem.roomName)}>
+        <p>{elem.roomName}</p>
+      </div>
+    ))}
+  </div>
+)
 }
 
 export default Groups

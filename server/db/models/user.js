@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     name: String,
     email: String,
     passwd: String,
-    rooms: [ {roomid: String, last_vis: Number} ]
+    rooms: [ {roomid: String, roomName: String, last_vis: Number} ]
 });
 
 const UserModel = mongoose.model('User',userSchema) ;
