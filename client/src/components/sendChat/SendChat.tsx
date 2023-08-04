@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useRecoilState , useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { io } from 'socket.io-client'
 
 import { jsonResp , sendChatProp } from "./sendChatTypes";
@@ -16,19 +16,18 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currChat, setCurrChat] = useRecoilState(currOpenChat) ;
   const token = localStorage.getItem('jwt') as string ;
-  const UserJoinedRooms = useRecoilValue(userRooms) ;
+  const [UserJoinedRooms,setUserJoinedRooms] = useRecoilState(userRooms) ;
 
   useEffect(() => {
     socket = io(backend) ;
     socket.on('connect',() => {
-      console.log(`you are connected`) ;
+      // console.log(`you are connected`) ;
     })
     UserJoinedRooms.rooms.forEach((elem)=> {
       socket.emit('join',elem.roomid) ;
     })
 
     socket.on('recieved-msg',(chatId:string, sender:string, msg:string) => {
-      console.log(chatId, sender, msg) ;
       if (sender===name) return;
       if (currChat._id===chatId) {
         setCurrChat(prevData => ({
@@ -37,7 +36,13 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
         }))
       }
       else{
-        // Send Notification
+        const findRoom = UserJoinedRooms.rooms.findIndex((arr) => {
+          return (arr.roomid === chatId)
+        })
+        if (findRoom!=-1) {
+          const shuffledRooom = [ UserJoinedRooms.rooms[findRoom] , ...(UserJoinedRooms.rooms.slice(0,findRoom)) , ...(UserJoinedRooms.rooms.slice(findRoom+1)) ]
+          setUserJoinedRooms({ name: UserJoinedRooms.name , rooms: [...shuffledRooom] }) ;
+        }
       }
     })
 
@@ -50,6 +55,8 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
   const handleChatSend = async (e:any) => {
     e.preventDefault() ;
     const { chatInput } = e.target ;
+    const newChatMsg = chatInput.value ;
+    chatInput.value = '' ;
     try {
       const res:Response = await fetch(`${backend}/appendChat`, {
         method:"POST",
@@ -57,7 +64,7 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
           'Content-type': 'application/json',
           'Authorization': token
         },
-        body: JSON.stringify({groupId: currChat._id, chatMsg: chatInput.value}) 
+        body: JSON.stringify({groupId: currChat._id, chatMsg: newChatMsg}) 
       })
 
       const json:jsonResp = await res.json() ;
@@ -66,13 +73,13 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       }
 
       const newCurrChatMsg = [...currChat.user_msg] ;
-      newCurrChatMsg.push({_id: '', user: name, msg: chatInput.value}) ;
+      newCurrChatMsg.push({_id: '', user: name, msg: newChatMsg}) ;
       setCurrChat(prevState => ({
         ...prevState,
         user_msg: newCurrChatMsg
       }))
 
-      socket.emit('new-chat',({chatId: currChat._id, sender: name, msg: chatInput.value})) ;
+      socket.emit('new-chat',({chatId: currChat._id, sender: name, msg: newChatMsg})) ;
     }
     catch(err) {
       console.log("error : ",err) ;
@@ -80,12 +87,19 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
   }
 
   return (
-    <form onSubmit={handleChatSend} id="SendChat" className="flrow">
-      <input type="text" name="chatInput" className="chat-ip"/>
-      <button type="submit" className="send-msg-btn flrow jcen acen">
-        <SendIcon style={{color: "blue"}}/>
-      </button>
-    </form>
+    <>
+    {currChat.selected? (
+      <form onSubmit={handleChatSend} id="SendChat" className="flrow">
+        <input type="text" name="chatInput" className="chat-ip"/>
+        <button type="submit" className="send-msg-btn flrow jcen acen">
+          <SendIcon style={{color: "blue"}}/>
+        </button>
+      </form>
+
+    ): (
+      <></>
+    )}
+    </>
   )
 }
 

@@ -13,7 +13,6 @@ const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
   useEffect(() => {
     if (chatBody.current) {
       const divElem:HTMLDivElement = chatBody.current ;
-      console.log(divElem) ;
       divElem.scrollTop = divElem.scrollHeight - divElem.clientHeight ;
     }
   }, [selectedChat])
