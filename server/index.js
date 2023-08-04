@@ -162,7 +162,8 @@ app.post('/appendChat',auth, async (req,res) => {
     if (!groupId || !chatMsg) return res.status(500).json({err: "Some error occured"}) ;
 
     try {
-        await RoomModel.updateOne({_id: groupId}, { $push : { user_msg: {user: req.user.name , msg: chatMsg} } }) ;
+        const currTime = new Date().getTime() ;
+        await RoomModel.updateOne({_id: groupId}, { $push : { user_msg: {user: req.user.name , msg: chatMsg} } , $set: {latest_msg: currTime} }) ;
         return res.status(200).json({success: true}) ;
     }
     catch(err) {
