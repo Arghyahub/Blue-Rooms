@@ -10,11 +10,20 @@ const backend: string = 'http://localhost:8000';
 const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [OpenChat, setOpenChat] = useRecoilState(currOpenChat);
-
   const token = localStorage.getItem('jwt') as string;
 
   const handleCurrOpenChat = async (roomid:string , roomName:string): Promise<void> => {
     try {
+      if (OpenChat.selected) { // send a last visit die request
+        fetch(`${backend}/updateLastVis`,{
+          method: 'POST',
+          headers: {
+            Authorization: token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({roomId: OpenChat._id})
+        })
+      }
       const res: Response = await fetch(`${backend}/getChatData`, {
         method: 'POST',
         headers: {
@@ -37,6 +46,9 @@ return (
     {rooms.map((elem, ind) => (
       <div key={`chats${ind}`} className='chat-card curpoi' onClick={() => handleCurrOpenChat(elem.roomid , elem.roomName)}>
         <p>{elem.roomName}</p>
+        {elem.notify && (
+          <div>Ghanta</div>
+        )}
       </div>
     ))}
   </div>

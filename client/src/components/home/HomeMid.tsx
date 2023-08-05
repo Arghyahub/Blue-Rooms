@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { useRecoilState } from "recoil";
 
 import Home from "./Home";
-import { jsonUser } from "./HomeTypes";
+import { jsonUser , newRoomType , fetchUserData } from "./HomeTypes";
 import { userRooms } from "../../Atom";
 const backend:string = "http://localhost:8000" ;
 
@@ -37,9 +37,12 @@ const HomeMid = ():JSX.Element => {
         }
       })
 
-      const json:jsonUser = await resp.json() ;
+      const json:fetchUserData = await resp.json() ;
 
-      if (json===null || json===undefined || json.token===false){ return; }
+      if (json===null || json===undefined || json.token===false){  
+        // some error occurred
+        return; 
+      }
       if (json.token===true && json.valid===false) {
         localStorage.removeItem('jwt') ;
         return;
@@ -50,7 +53,16 @@ const HomeMid = ():JSX.Element => {
       }
       if (json.name && json.rooms){
         setUserExist(true);
-        setUserData({ name: json.name , rooms: json.rooms }) ;
+        // json.rooms.sort((a,b) => b.roomUpdated - a.roomUpdated) ;
+        const newRoom:newRoomType[] = [  ];
+
+        json.rooms.forEach(elem => {
+          const sel:boolean = elem.roomUpdated > elem.last_vis ;
+          console.log(elem.roomUpdated , elem.last_vis) ;
+          newRoom.push({ roomid: elem.roomid , roomName: elem.roomName , notify: sel }) ;
+        })
+        
+        setUserData({ name: json.name , rooms: newRoom }) ;
       }
     }
     catch(err) {

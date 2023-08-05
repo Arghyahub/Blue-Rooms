@@ -16,8 +16,10 @@ const jwt_secret = process.env.JWT_SEC ; // --------------- Important
 const connectDB = require('./db/config.js') ;
 const UserModel = require('./db/models/user.js') ;
 const RoomModel = require('./db/models/room.js') ;
+const UpdateTimeModel = require('./db/models/updateTime.js') ;
 
 const auth = require('./middleware/auth.js') ;
+const e = require('express');
 
 // Connect DB
 connectDB('testDB')
@@ -46,10 +48,10 @@ app.post('/signup',async (req,res) => {
         const id = String(newUser._id) ;
 
         const token = jwt.sign({id: id}, jwt_secret) ;
-
         res.status(200).json({msg: "Signup successfull" , token: token}) ;
     }
     catch(err) {
+        console.log("Idk error : ") ;
         console.log(err) ;
         return res.status(500).json({msg : "Internal Error"}) ;
     }
@@ -84,8 +86,23 @@ app.post('/login',async (req,res) => {
 })
 
 
-app.get("/userData",auth,(req,res)=> {
-    res.status(200).json({name: req.user.name, rooms: req.user.rooms}) ;
+app.get("/userData",auth, async (req,res)=> {
+    try {
+        const roomData = [] ;
+        for (let i=0; i<req.user.rooms.length; i++) {
+            const updated = await UpdateTimeModel.findOne({ roomId : req.user.rooms[i].roomid}) ;
+            if (!updated) return res.status(405).json({err: "some error occurred"}) ;
+            roomData.push({ roomid: req.user.rooms[i].roomid , roomName: req.user.rooms[i].roomName , last_vis: req.user.rooms[i].last_vis , _id: req.user.rooms[i]._id , roomUpdated: updated.update  }) ;
+            // roomData[i].roomUpdated = updated.update ;
+            // console.log(roomData[i]) ;
+        }
+        console.log(roomData) ;
+        res.status(200).json({name: req.user.name, rooms: roomData}) ;
+    }
+    catch(err) {
+        console.log(err) ;
+        res.status(405).json({err: "Internal server error"}) ;
+    }
 })
 
 app.post("/getChatData",auth, async (req,res) => {
@@ -139,6 +156,8 @@ app.post('/addFriend',auth, async (req,res)=> {
         const currTime = new Date().getTime() ;
         const newRoom = new RoomModel({ group: false, user_msg: [],members: [req.user.name, friendName] ,latest_msg: currTime }) ;
         await newRoom.save() ;
+        const updateRoomTime = new UpdateTimeModel({ roomId: newRoom._id ,update: currTime }) ;
+        await updateRoomTime.save() ;
 
         // 2.1 Add group Id to both contact's room list
         const user1 = await UserModel.findOne({name: req.user.name}) ;
@@ -164,6 +183,7 @@ app.post('/appendChat',auth, async (req,res) => {
     try {
         const currTime = new Date().getTime() ;
         await RoomModel.updateOne({_id: groupId}, { $push : { user_msg: {user: req.user.name , msg: chatMsg} } , $set: {latest_msg: currTime} }) ;
+        await UpdateTimeModel.updateOne({roomId: groupId} , { $set : {update: currTime}  } )
         return res.status(200).json({success: true}) ;
     }
     catch(err) {
@@ -171,6 +191,20 @@ app.post('/appendChat',auth, async (req,res) => {
         return res.status(405).json({err: "Some error occurred"}) ;
     }
 })
+
+app.post('/updateLastVis',auth,async (req,res)=> {
+    const { roomId } = req.body ;
+    if (!roomId ) return res.status(405).json({msg: "Some error occurred"}) ;
+    try {
+        const currTime = new Date().getTime() ;
+        await UpdateTimeModel.updateOne({_id: roomId} , {$set : { update: currTime }}) ;
+    }
+    catch(err) {
+        console.log(err);
+        return res.status(405).json({msg: "Some error occurred"}) ;
+    }
+})
+
 
 
 const server = app.listen(port,()=> {

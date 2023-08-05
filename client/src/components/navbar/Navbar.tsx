@@ -74,7 +74,7 @@ const Navbar = (): JSX.Element => {
       const json:addFriendValid = await resp.json() ;
       if (json.success && json.roomId){
         const newData = [...UserData.rooms];
-        newData.unshift({roomid: json.roomId, roomName: friendName, last_vis: new Date().getTime()}) ;
+        newData.unshift({roomid: json.roomId, roomName: friendName, notify: false }) ;
 
         setUserData({name: UserData.name, rooms: newData}) ;
       }

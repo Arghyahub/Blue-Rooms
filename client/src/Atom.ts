@@ -5,15 +5,22 @@ const userAdded:RecoilState<string> = atom({
     default: '', // default value (aka initial value)
 });
 
-interface rooms {
+// interface rooms {
+//     roomid: string,
+//     roomName: string,
+//     last_vis: number,
+//     roomUpdated: number
+// }
+
+export interface newRoomType {
     roomid: string,
     roomName: string,
-    last_vis: number
+    notify: boolean
 }
 
 interface jsonUser {
     name: string,
-    rooms: rooms[] ,
+    rooms: newRoomType[] ,
 }
 
 const userRooms:RecoilState<jsonUser> = atom({

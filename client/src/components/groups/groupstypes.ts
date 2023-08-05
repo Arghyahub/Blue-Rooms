@@ -4,8 +4,14 @@ export interface rooms {
     last_vis: number
 }
 
+export interface newRoomType {
+    roomid: string,
+    roomName: string,
+    notify: boolean
+}
+
 export interface roomProp {
-    rooms: rooms[] | [] ,
+    rooms: newRoomType[] | [] ,
     name: string
 }
 
@@ -19,7 +25,7 @@ export interface chatDatas {
     _id: string,
     group: boolean,
     user_msg: userMsg[] | [],
-    members: string,
+    members: string[],
     latest_msg: number
 }
 
