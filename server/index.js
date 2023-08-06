@@ -89,14 +89,13 @@ app.post('/login',async (req,res) => {
 app.get("/userData",auth, async (req,res)=> {
     try {
         const roomData = [] ;
-        for (let i=0; i<req.user.rooms.length; i++) {
-            const updated = await UpdateTimeModel.findOne({ roomId : req.user.rooms[i].roomid}) ;
-            if (!updated) return res.status(405).json({err: "some error occurred"}) ;
-            roomData.push({ roomid: req.user.rooms[i].roomid , roomName: req.user.rooms[i].roomName , last_vis: req.user.rooms[i].last_vis , _id: req.user.rooms[i]._id , roomUpdated: updated.update  }) ;
-            // roomData[i].roomUpdated = updated.update ;
-            // console.log(roomData[i]) ;
-        }
-        console.log(roomData) ;
+
+        await Promise.all(
+            (req.user.rooms).map(async (roomElem) => {
+                const updated = await UpdateTimeModel.findOne({ roomId : roomElem.roomid}) ;
+                roomData.push({ roomid: roomElem.roomid , roomName: roomElem.roomName , last_vis: roomElem.last_vis , _id: roomElem._id , roomUpdated: (updated.update? updated.update:undefined)  }) ;
+            })
+        )
         res.status(200).json({name: req.user.name, rooms: roomData}) ;
     }
     catch(err) {
