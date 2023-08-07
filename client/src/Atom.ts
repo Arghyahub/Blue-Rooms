@@ -70,5 +70,10 @@ const chatDataStore: RecoilState< chatDatas[] | []> = atom({
     default: [] as chatDatas[],
 });
 
+const notificationCount: RecoilState<number> = atom({
+    key: "notificationCount",
+    default: 0
+})
 
-export { userAdded , currOpenChat , chatDataStore , userRooms } ;
+
+export { userAdded , currOpenChat , chatDataStore , userRooms , notificationCount } ;

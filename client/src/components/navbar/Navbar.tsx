@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { useRecoilState } from "recoil";
+import { useRecoilState , useRecoilValue } from "recoil";
 
-import { userRooms } from "../../Atom";
+import { userRooms , notificationCount } from "../../Atom";
 import './Navbar.css'
 import { friendJson , addFriendValid } from "./navbarTypes";
 
@@ -19,6 +19,7 @@ const Navbar = (): JSX.Element => {
   const [UserData, setUserData] = useRecoilState(userRooms) ;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [FriendData, setFriendData] = useState<friendJson>({name:'' , id:''}) ;
+  const NotificationCount = useRecoilValue(notificationCount) ;
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -125,7 +126,7 @@ const Navbar = (): JSX.Element => {
           </button>
         </form>
 
-        <Badge badgeContent={1} color="primary">
+        <Badge badgeContent={NotificationCount} color="primary">
           <NotificationsIcon color="action" />
         </Badge>
         <PersonIcon />

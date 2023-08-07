@@ -192,11 +192,12 @@ app.post('/appendChat',auth, async (req,res) => {
 })
 
 app.post('/updateLastVis',auth,async (req,res)=> {
-    const { roomId } = req.body ;
-    if (!roomId ) return res.status(405).json({msg: "Some error occurred"}) ;
+    const { roomId , name } = req.body ;
+    if (!roomId || !name ) return res.status(405).json({msg: "Some error occurred"}) ;
     try {
         const currTime = new Date().getTime() ;
-        await UpdateTimeModel.updateOne({_id: roomId} , {$set : { update: currTime }}) ;
+        await UserModel.updateOne({ name: name , 'rooms.roomid': roomId }, { $set: {'rooms.$.last_vis': currTime} }) ;
+        return res.status(200).json({success:true});
     }
     catch(err) {
         console.log(err);

@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 
 import Home from "./Home";
 import { jsonUser , newRoomType , fetchUserData } from "./HomeTypes";
-import { userRooms } from "../../Atom";
+import { userRooms , notificationCount } from "../../Atom";
 const backend:string = "http://localhost:8000" ;
 
 
@@ -21,6 +21,8 @@ const NotFound = () => {
 const HomeMid = ():JSX.Element => {
   const [UserExist, setUserExist] = useState<boolean>(false) ;
   const [UserData, setUserData] = useRecoilState<jsonUser>(userRooms) ;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [NotificationCount, setNotificationCount] = useRecoilState(notificationCount) ;
 
   const getData = async ():Promise<void> => {
     const token:string|null = localStorage.getItem('jwt') ;
@@ -56,13 +58,15 @@ const HomeMid = ():JSX.Element => {
         // json.rooms.sort((a,b) => b.roomUpdated - a.roomUpdated) ;
         const newRoom:newRoomType[] = [  ];
 
+        let totalNotif:number = 0;
         json.rooms.forEach(elem => {
           const sel:boolean = elem.roomUpdated > elem.last_vis ;
-          console.log(elem.roomUpdated , elem.last_vis) ;
+          if (sel){ totalNotif+=1;}
           newRoom.push({ roomid: elem.roomid , roomName: elem.roomName , notify: sel }) ;
         })
         
         setUserData({ name: json.name , rooms: newRoom }) ;
+        setNotificationCount(totalNotif) ;
       }
     }
     catch(err) {
