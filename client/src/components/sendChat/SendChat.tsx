@@ -48,8 +48,10 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
     })
 
     socket.on('joinRoom',(allUsers:string[],roomId:string) => {
+      if (allUsers[0]===name) return;
+      console.log("i joined ",roomId) ;
       const findIdx = allUsers.findIndex((usrs) => usrs===name) ;
-      console.log("Request Came" , findIdx) ;
+      console.log(allUsers , roomId) ;
       if (findIdx!=-1) {
         socket.emit('join',roomId) ;
         const newRoom = [...UserJoinedRooms.rooms] ;

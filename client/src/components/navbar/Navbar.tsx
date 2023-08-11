@@ -80,6 +80,8 @@ const Navbar = (): JSX.Element => {
 
         setUserData({name: UserData.name, rooms: newData}) ;
         // handle socket connection to add other users
+        socket.emit('join',json.roomId) ;
+        console.log('i joined ',json.roomId);
         socket.emit('addFriends',json.allUsers,json.roomId) ;
       }
       if (json.err) {
@@ -92,7 +94,7 @@ const Navbar = (): JSX.Element => {
     }
   }
 
-  
+
 
   return (
     <div id='Navbar' className="flrow acen">
