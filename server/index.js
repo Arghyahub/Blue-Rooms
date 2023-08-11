@@ -167,7 +167,7 @@ app.post('/addFriend',auth, async (req,res)=> {
         await user2.save() ;
         
         // 3. Return room added, with roomId to add to ui
-        res.status(200).json({success: true, roomId: newRoom._id}) ;
+        res.status(200).json({success: true, roomId: newRoom._id, allUsers: [req.user.name, friendName]}) ;
     }
     catch(err) {
         console.log(err) ;
@@ -219,6 +219,7 @@ const io = require('socket.io')(server, {
 })
 
 io.on('connection', (socket)=> {
+    socket.join('RootRoom') ;
     // console.log("User connected" + socket.id) ;
     socket.on('join',(roomid)=> {
         socket.join(roomid) ;
@@ -226,5 +227,11 @@ io.on('connection', (socket)=> {
 
     socket.on('new-chat',({chatId, sender, msg}) => {
         socket.to(chatId).emit('recieved-msg',chatId,sender,msg) ;
+    })
+
+    socket.on('addFriends',(allUsers,roomId) => {
+        console.log(allUsers) ;
+        console.log(roomId) ;
+        socket.to('RootRoom').emit('joinRoom',allUsers,roomId) ;
     })
 })

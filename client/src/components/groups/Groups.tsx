@@ -1,6 +1,7 @@
 import {  useRecoilState } from 'recoil';
 
 import { currOpenChat , userRooms , notificationCount } from '../../Atom';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import './Groups.css'
 import { roomProp, chatDatas } from './groupstypes'
 
@@ -68,7 +69,7 @@ return (
       <div key={`chats${ind}`} className='chat-card curpoi' onClick={() => handleCurrOpenChat(elem.roomid , elem.roomName , elem.notify)}>
         <p>{elem.roomName}</p>
         {elem.notify && (
-          <div>Ghanta</div>
+          <NotificationsActiveIcon/>
         )}
       </div>
     ))}

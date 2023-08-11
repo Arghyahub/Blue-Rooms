@@ -40,9 +40,21 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
           return (arr.roomid === chatId)
         })
         if (findRoom!=-1) {
-          const shuffledRooom = [ UserJoinedRooms.rooms[findRoom] , ...(UserJoinedRooms.rooms.slice(0,findRoom)) , ...(UserJoinedRooms.rooms.slice(findRoom+1)) ]
+          const upRoom = UserJoinedRooms.rooms[findRoom] ;
+          const shuffledRooom = [ {roomid: upRoom.roomid , roomName: upRoom.roomName , notify: true} , ...(UserJoinedRooms.rooms.slice(0,findRoom)) , ...(UserJoinedRooms.rooms.slice(findRoom+1)) ]
           setUserJoinedRooms({ name: UserJoinedRooms.name , rooms: [...shuffledRooom] }) ;
         }
+      }
+    })
+
+    socket.on('joinRoom',(allUsers:string[],roomId:string) => {
+      const findIdx = allUsers.findIndex((usrs) => usrs===name) ;
+      console.log("Request Came" , findIdx) ;
+      if (findIdx!=-1) {
+        socket.emit('join',roomId) ;
+        const newRoom = [...UserJoinedRooms.rooms] ;
+        newRoom.unshift({roomid: roomId, roomName: allUsers[1-findIdx], notify: true}) ;
+        setUserJoinedRooms({name: UserJoinedRooms.name , rooms: newRoom}) ;
       }
     })
 
@@ -103,4 +115,7 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
   )
 }
 
-export default SendChat
+// eslint-disable-next-line react-refresh/only-export-components
+export {socket} ;
+
+export default SendChat ;

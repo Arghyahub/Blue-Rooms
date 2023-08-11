@@ -4,7 +4,8 @@ export interface friendJson {
 }
 
 export interface addFriendValid {
-    success: boolean;
+    success: boolean,
     err?: string,
-    roomId?: string
+    roomId?: string,
+    allUsers: string[],
 }

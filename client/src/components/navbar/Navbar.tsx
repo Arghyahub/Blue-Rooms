@@ -4,6 +4,7 @@ import { useRecoilState , useRecoilValue } from "recoil";
 import { userRooms , notificationCount } from "../../Atom";
 import './Navbar.css'
 import { friendJson , addFriendValid } from "./navbarTypes";
+import { socket } from "../sendChat/SendChat";
 
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
@@ -78,6 +79,8 @@ const Navbar = (): JSX.Element => {
         newData.unshift({roomid: json.roomId, roomName: friendName, notify: false }) ;
 
         setUserData({name: UserData.name, rooms: newData}) ;
+        // handle socket connection to add other users
+        socket.emit('addFriends',json.allUsers,json.roomId) ;
       }
       if (json.err) {
         // Display error
@@ -89,6 +92,7 @@ const Navbar = (): JSX.Element => {
     }
   }
 
+  
 
   return (
     <div id='Navbar' className="flrow acen">
