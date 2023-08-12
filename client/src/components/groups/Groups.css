@@ -1,10 +1,27 @@
 #Groups {
-    width: 40%;
     border: 1px solid red;
     overflow-y: scroll;
+}
+
+.groups {
+    width: 40%;
 }
 
 .chat-card {
     height: 80px;
     border: 1px solid yellow;
+}
+
+.hide-groups {
+}
+.show-full {
+}
+
+@media only screen and (max-width: 600px) {
+    .hide-groups {
+        width: 0%;
+    }
+    .show-full {
+        width: 100%;
+    }
 }

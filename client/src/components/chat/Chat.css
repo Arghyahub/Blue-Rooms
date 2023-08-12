@@ -1,4 +1,5 @@
 #Chat {
+    width: 100%;
     border: 1px solid green;
     overflow-y: scroll;
     flex-grow: 1;
@@ -17,4 +18,13 @@
     color: blue;
     position: sticky;
     top: 0;
+}
+
+.hide-back {
+}
+
+@media screen and (min-width: 600px) {
+    .hide-back {
+        display: none;
+    }
 }

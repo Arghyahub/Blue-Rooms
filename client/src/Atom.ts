@@ -75,5 +75,10 @@ const notificationCount: RecoilState<number> = atom({
     default: 0
 })
 
+const smallScreenChatOpen: RecoilState<boolean> = atom({
+    key: "smallScreenChatOpen",
+    default: false
+})
 
-export { userAdded , currOpenChat , chatDataStore , userRooms , notificationCount } ;
+
+export { userAdded , currOpenChat , chatDataStore , userRooms , notificationCount , smallScreenChatOpen } ;

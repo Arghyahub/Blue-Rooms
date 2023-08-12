@@ -1,7 +1,8 @@
-// import { useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import {homeProps} from './HomeTypes'
-// import { currOpenChat } from '../../Atom';
+import './Home.css'
+import { smallScreenChatOpen } from '../../Atom';
 
 import Navbar from '../navbar/Navbar';
 import Groups from '../groups/Groups';
@@ -10,7 +11,7 @@ import SendChat from '../sendChat/SendChat';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Home:React.FC<homeProps> = ( {name , rooms} ) => {
-  // const selectedChat = useRecoilValue(currOpenChat) ;
+  const SmallScreenChat = useRecoilValue(smallScreenChatOpen) ;
   return (
     <div id="Home" className='flcol h100 w100'>
       
@@ -19,7 +20,7 @@ const Home:React.FC<homeProps> = ( {name , rooms} ) => {
       <div className="group-chat flrow f1 w100">
         <Groups rooms={rooms} name={name} />
 
-        <div className="chat-sec flcol w100">
+        <div className={`chat-sec flcol w100 ${SmallScreenChat? '':'hide-chatWin'}`}>
           <Chat name={name} />
           <SendChat name={name} />
         </div>
