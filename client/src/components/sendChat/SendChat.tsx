@@ -124,6 +124,20 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
     }
   }
 
+  window.addEventListener('beforeunload', () => {
+    if (currChat.selected) {
+      const prevRoomId = currChat._id ;
+      fetch(`${backend}/updateLastVis`,{
+        method: 'POST',
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name: name , roomId: prevRoomId})
+      })
+    }
+  });
+
   return (
     <>
     {currChat.selected? (

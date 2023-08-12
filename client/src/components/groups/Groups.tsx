@@ -21,7 +21,7 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
     try {
       if (OpenChat.selected) { // send a last visit die request
         const prevRoomId = OpenChat._id ;
-        console.log(`sending req for ${prevRoomId}`);
+        // console.log(`sending req for ${prevRoomId}`);
         fetch(`${backend}/updateLastVis`,{
           method: 'POST',
           headers: {
