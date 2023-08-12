@@ -75,8 +75,7 @@ const Navbar = (): JSX.Element => {
       }) 
       const json:addFriendValid = await resp.json() ;
       if (json.success && json.roomId){
-        const newData = [...UserData.rooms];
-        newData.unshift({roomid: json.roomId, roomName: friendName, notify: false }) ;
+        const newData = [{roomid: json.roomId, roomName: friendName, notify: false } ,...UserData.rooms];
 
         setUserData({name: UserData.name, rooms: newData}) ;
         // handle socket connection to add other users

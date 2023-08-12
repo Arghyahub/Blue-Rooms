@@ -9,7 +9,6 @@ const backend: string = 'http://localhost:8000';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [OpenChat, setOpenChat] = useRecoilState(currOpenChat);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [UserRooms, setUserRooms] = useRecoilState(userRooms) ;
@@ -43,7 +42,7 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
       })
 
       const jsonData: chatDatas = await res.json();
-      setOpenChat({ selected: true, _id: jsonData._id, group: jsonData.group, user_msg: jsonData.user_msg, name: roomName, members: jsonData.members ,latest_msg: jsonData.latest_msg  }) ;
+      setOpenChat({selected: true, _id: jsonData._id, group: jsonData.group, user_msg: jsonData.user_msg, name: roomName, members: jsonData.members, latest_msg: jsonData.latest_msg}) ;
 
       if (notify) {
         const updatedRooms = UserRooms.rooms.map(room => {

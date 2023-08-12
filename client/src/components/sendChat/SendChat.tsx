@@ -27,9 +27,20 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       socket.emit('join',elem.roomid) ;
     })
 
+    // recieve msg
+
+    return () => {
+      socket.off('recieved-msg'); // Remove the event listener when the component unmounts
+    };
+  },[])
+
+  useEffect(() => {
     socket.on('recieved-msg',(chatId:string, sender:string, msg:string) => {
       if (sender===name) return;
+      // console.log(currChat._id, chatId) ;
+      console.log(currChat) ;
       if (currChat._id===chatId) {
+        // console.log("here") ;
         setCurrChat(prevData => ({
           ...prevData,
           user_msg: [...prevData.user_msg, {_id:'', user: sender, msg: msg} ]
@@ -47,6 +58,12 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       }
     })
 
+    return () => {
+      socket.off('recieved-msg'); // Remove the event listener when the component unmounts
+    };
+  }, [currChat])
+
+  useEffect(() => {
     socket.on('joinRoom',(allUsers:string[],roomId:string) => {
       if (allUsers[0]===name) return;
       console.log("i joined ",roomId) ;
@@ -54,16 +71,22 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       console.log(allUsers , roomId) ;
       if (findIdx!=-1) {
         socket.emit('join',roomId) ;
-        const newRoom = [...UserJoinedRooms.rooms] ;
-        newRoom.unshift({roomid: roomId, roomName: allUsers[1-findIdx], notify: true}) ;
+        console.log("prev room :") ;
+        UserJoinedRooms.rooms.forEach(elem => console.log(elem)) ;
+
+        const newRoom = [{roomid: roomId, roomName: allUsers[1-findIdx], notify: true} , ...(UserJoinedRooms.rooms)] ;
+        console.log("new room :") ;
+        newRoom.forEach(elem => console.log(elem)) ;
         setUserJoinedRooms({name: UserJoinedRooms.name , rooms: newRoom}) ;
       }
     })
 
     return () => {
-      socket.off('recieved-msg'); // Remove the event listener when the component unmounts
-    };
-  },[])
+      socket.off('joinRoom') ;
+    }
+  }, [UserJoinedRooms])
+  
+  
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChatSend = async (e:any) => {
@@ -84,6 +107,7 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       const json:jsonResp = await res.json() ;
       if (json.err){
         // allert the user
+        return;
       }
 
       const newCurrChatMsg = [...currChat.user_msg] ;
