@@ -80,5 +80,10 @@ const smallScreenChatOpen: RecoilState<boolean> = atom({
     default: false
 })
 
+const loadingChat: RecoilState<boolean> = atom({
+    key:"loadingChat",
+    default: false ,
+})
 
-export { userAdded , currOpenChat , chatDataStore , userRooms , notificationCount , smallScreenChatOpen } ;
+
+export { userAdded , currOpenChat , chatDataStore , userRooms , notificationCount , smallScreenChatOpen , loadingChat } ;

@@ -1,6 +1,6 @@
 import {  useRecoilState } from 'recoil';
 
-import { currOpenChat , userRooms , notificationCount , smallScreenChatOpen } from '../../Atom';
+import { currOpenChat , userRooms , notificationCount , smallScreenChatOpen , loadingChat } from '../../Atom';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import './Groups.css'
 import { roomProp, chatDatas } from './groupstypes'
@@ -15,11 +15,14 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [NotificationCount,setNotificationCount] = useRecoilState(notificationCount) ;
   const [SmallScreenChat,setSmallScreenChat] = useRecoilState(smallScreenChatOpen) ;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [LoadChat, setLoadChat] = useRecoilState(loadingChat) ;
 
   const token = localStorage.getItem('jwt') as string;
 
   const handleCurrOpenChat = async (roomid:string , roomName:string , notify:boolean): Promise<void> => {
     setSmallScreenChat(true) ;
+    setLoadChat(true) ;
     try {
       if (OpenChat.selected) { // send a last visit die request
         const prevRoomId = OpenChat._id ;
@@ -61,8 +64,9 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
     }
     catch (err) {
     console.log('error in getting chats', err);
+    }
+    setLoadChat(false) ;
   }
-}
 
 return (
   <div id='Groups' className={`flcol groups ${SmallScreenChat? 'hide-groups':'show-full'}`}>

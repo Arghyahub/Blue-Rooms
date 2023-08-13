@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useRecoilState } from "recoil";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 import Home from "./Home";
 import { jsonUser , newRoomType , fetchUserData } from "./HomeTypes";
@@ -24,7 +25,10 @@ const HomeMid = ():JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [NotificationCount, setNotificationCount] = useRecoilState(notificationCount) ;
 
+  const [Loading, setLoading] = useState(false) ;
+
   const getData = async ():Promise<void> => {
+    setLoading(true) ;
     const token:string|null = localStorage.getItem('jwt') ;
     if (!token) {
       setUserExist(false) ;
@@ -55,13 +59,15 @@ const HomeMid = ():JSX.Element => {
       }
       if (json.name && json.rooms){
         setUserExist(true);
-        // json.rooms.sort((a,b) => b.roomUpdated - a.roomUpdated) ;
+        json.rooms.sort((a,b) => b.roomUpdated - a.roomUpdated) ;
         const newRoom:newRoomType[] = [  ];
 
         let totalNotif:number = 0;
         json.rooms.forEach(elem => {
           const sel:boolean = elem.roomUpdated > elem.last_vis ;
-          if (sel){ totalNotif+=1;}
+          if (sel){
+            totalNotif+=1;
+          }
           newRoom.push({ roomid: elem.roomid , roomName: elem.roomName , notify: sel }) ;
         })
         
@@ -74,6 +80,7 @@ const HomeMid = ():JSX.Element => {
       console.log("Error occurred, check internet") ;
       return;
     }
+    setLoading(false) ;
   }
 
   useEffect(() => {
@@ -82,11 +89,24 @@ const HomeMid = ():JSX.Element => {
 
   return (
     <>
-    {UserExist? (
-      <Home name={UserData.name} rooms={UserData.rooms} />
+    {Loading? (
+      <div className="w100 h100 flrow jcen acen">
+        <PropagateLoader
+        color={'#26E7FE'}
+        loading={Loading}
+        size={30}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+        />
+      </div>
     ): (
-      <NotFound />
+      UserExist? (
+        <Home name={UserData.name} rooms={UserData.rooms} />
+      ): (
+        <NotFound />
+      )
     )}
+
     </>
   )
 }
