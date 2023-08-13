@@ -10,18 +10,29 @@ const iconURL:string = "https://loremicon.com/ngon/128/128/939346400536/jpg" ;
 const backend:string = "http://localhost:8000" ;
 // -------------------------
 
+
+import * as React from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+type AlertColor = 'success' | 'info' | 'warning' | 'error';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+interface State extends SnackbarOrigin {
+  open?: boolean;
+  msg: string;
+  typeE: AlertColor | undefined;
+}
+
 const Navbar = ():JSX.Element => {
     return (
       <div className="home-nav flrow acen">
         <img src={iconURL} alt="Icon" className='home-icon' />
         <h4>Recruit</h4>
-{/*         
-        <div className='navlog flrow'>
-          <Link to="/hire" className="nav-btn">Hire</Link>
-          <Link to="/apply" className="nav-btn">Get hired</Link>
-          <a href="#about" className="nav-btn">About us</a>
-        </div>
-         */}
       </div>
     )
 }
@@ -51,6 +62,23 @@ const Contact = ():JSX.Element => {
 
 const Landing = ():JSX.Element => {
   const navigate:NavigateFunction = useNavigate() ;
+
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    msg: '',
+    typeE: 'success'
+    // error warning info success
+  });
+  const { vertical, horizontal, open , msg , typeE } = state;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleClick = (newState: State) => () => {
+    setState({ ...newState, open: true });
+  };
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   const getData = async ():Promise<jsonUser | null> => {
     const token:string|null = localStorage.getItem('jwt') ;
@@ -85,11 +113,12 @@ const Landing = ():JSX.Element => {
       // console.log('Landing' + data) ;
       if (data===null || data.token===false){ return; }
       if (data.token===true && data.valid===false) {
+        setState({ vertical: 'top', horizontal: 'center' , msg: 'Data invalidated', typeE: 'error' , open: true}) ;
         localStorage.removeItem('jwt') ;
         return;
       }
-      if (data.token && data.valid) {
-        alert("Some error occurred, check Internet") ;
+      if (data.token && !data.valid) {
+        setState({ vertical: 'top', horizontal: 'center' , msg: 'Server Error, try logging again', typeE: 'error' , open: true}) ;
         return;
       }
 
@@ -103,8 +132,20 @@ const Landing = ():JSX.Element => {
 
   return (
     <div id="Home" className="h100">
-
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+        autoHideDuration={4000}
+      >
+        <Alert onClose={handleClose} severity={typeE} sx={{ width: '100%' }}>
+          {msg}
+        </Alert>
+      </Snackbar>
       <Navbar />
+
+      {/* <button onClick={handleClick({ vertical: 'top', horizontal: 'center' , msg: 'Data invalidated', typeE: 'error' })}>Click Try</button> */}
       
       <div className="flcol homebg-div jcen acen">
         <img src={bgURL} alt="Home" className="homebg abs"/>
@@ -112,9 +153,9 @@ const Landing = ():JSX.Element => {
         <p className="home-txt">Your personal chat and fun rooms</p>
 
         <div className="flrow join-opt acen">
-          <Link to={'/auth'} className="homejoin-btn grsha">Signup</Link>
+          <Link to={'/auth'} onClick={() => localStorage.removeItem('jwt')} className="homejoin-btn grsha">Signup</Link>
           Or
-          <Link to={'/auth'} className="homejoin-btn grsha">Login</Link>
+          <Link to={'/auth'} onClick={() => localStorage.removeItem('jwt')} className="homejoin-btn grsha">Login</Link>
         </div>
       </div>
 

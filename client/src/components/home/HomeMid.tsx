@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useRecoilState } from "recoil";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
@@ -8,13 +8,39 @@ import { jsonUser , newRoomType , fetchUserData } from "./HomeTypes";
 import { userRooms , notificationCount } from "../../Atom";
 const backend:string = "http://localhost:8000" ;
 
+import * as React from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+type AlertColor = 'success' | 'info' | 'warning' | 'error';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+interface State extends SnackbarOrigin {
+  open?: boolean;
+  msg: string;
+  typeE: AlertColor | undefined;
+}
+
 
 const NotFound = () => {
+  const navigate = useNavigate() ;
   return (
     <div className="flcol h100 w100 jcen acen">
       <h1 style={{marginBottom: '2rem'}}>Account not logged in</h1>
-      <p>If you have an account try <Link to={'/'} >Login..</Link></p>
-      <p>Or create an account <Link to={'/'} >Signup..</Link> </p>
+      <p>If you have an account try <button onClick={()=> {
+        localStorage.removeItem('jwt') ;
+        navigate('/auth')
+        }}>Login.. </button>
+      </p>
+      <p>Or create an account <button onClick={()=> {
+        localStorage.removeItem('jwt') ;
+        navigate('/auth')
+        }}>Signup..</button> 
+      </p>
     </div>
   )
 }
@@ -24,14 +50,32 @@ const HomeMid = ():JSX.Element => {
   const [UserData, setUserData] = useRecoilState<jsonUser>(userRooms) ;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [NotificationCount, setNotificationCount] = useRecoilState(notificationCount) ;
-
   const [Loading, setLoading] = useState(false) ;
+
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    msg: '',
+    typeE: 'success'
+    // error warning info success
+  });
+  const { vertical, horizontal, open , msg , typeE } = state;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleClick = (newState: State) => () => {
+    setState({ ...newState, open: true });
+  };
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
 
   const getData = async ():Promise<void> => {
     setLoading(true) ;
     const token:string|null = localStorage.getItem('jwt') ;
     if (!token) {
       setUserExist(false) ;
+      setLoading(false) ;
       return;
     }
     try{
@@ -45,19 +89,24 @@ const HomeMid = ():JSX.Element => {
 
       const json:fetchUserData = await resp.json() ;
 
-      if (json===null || json===undefined || json.token===false){  
-        // some error occurred
+      if (json===null || json===undefined || json.token===false){
+        setLoading(false) ;
+        setState({ vertical: 'top', horizontal: 'center' , msg: 'Sever Error, try logging again', typeE: 'error' }) ;
         return; 
       }
       if (json.token===true && json.valid===false) {
         localStorage.removeItem('jwt') ;
+        setLoading(false) ;
+        setState({ vertical: 'top', horizontal: 'center' , msg: 'Data invalidated', typeE: 'error'}) ;
         return;
       }
-      if (json.token && json.valid) {
-        alert("Some error occurred, check Internet") ;
+      if (json.token && !json.valid) {
+        setLoading(false) ;
+        setState({ vertical: 'top', horizontal: 'center' , msg: 'User not find, Try logging in', typeE: 'error'}) ;
         return;
       }
       if (json.name && json.rooms){
+        setState({ vertical: 'top', horizontal: 'center' , msg: 'User not find, Try logging in', typeE: 'success'}) ;
         setUserExist(true);
         json.rooms.sort((a,b) => b.roomUpdated - a.roomUpdated) ;
         const newRoom:newRoomType[] = [  ];
@@ -77,7 +126,8 @@ const HomeMid = ():JSX.Element => {
     }
     catch(err) {
       console.log(err) ;
-      console.log("Error occurred, check internet") ;
+      setState({ vertical: 'top', horizontal: 'center' , msg: 'Check Internet and try again', typeE: 'error'}) ;
+      setLoading(false) ;
       return;
     }
     setLoading(false) ;
@@ -89,6 +139,17 @@ const HomeMid = ():JSX.Element => {
 
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+        autoHideDuration={6000}
+      >
+        <Alert onClose={handleClose} severity={typeE} sx={{ width: '100%' }}>
+          {msg}
+        </Alert>
+      </Snackbar>
     {Loading? (
       <div className="w100 h100 flrow jcen acen">
         <PropagateLoader
@@ -101,7 +162,9 @@ const HomeMid = ():JSX.Element => {
       </div>
     ): (
       UserExist? (
+        <>
         <Home name={UserData.name} rooms={UserData.rooms} />
+        </>
       ): (
         <NotFound />
       )

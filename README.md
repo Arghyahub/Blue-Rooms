@@ -1,3 +1,3 @@
 # Things to do
 
-- [ ] Update chat implementation
+- [ ] Chat, SendChat, Group Snackbar left

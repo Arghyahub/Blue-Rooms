@@ -16,6 +16,23 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const backend:string = "http://localhost:8000" ;
 
+import * as React from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+type AlertColor = 'success' | 'info' | 'warning' | 'error';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+interface State extends SnackbarOrigin {
+  openSn?: boolean;
+  msg: string;
+  typeE: AlertColor | undefined;
+}
+
 const Navbar = (): JSX.Element => {
   const [UserData, setUserData] = useRecoilState(userRooms) ;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -85,18 +102,47 @@ const Navbar = (): JSX.Element => {
       }
       if (json.err) {
         // Display error
+        setState({ vertical: 'top', horizontal: 'center' , msg: json.err, typeE: 'error' , openSn: true}) ;
         alert(json.err) ;
       }
     }
     catch(err) {
+      setState({ vertical: 'top', horizontal: 'center' , msg: "Server Error", typeE: 'error' , openSn: true}) ;
       console.log(err) ;
     }
   }
 
-
+  const [state, setState] = React.useState<State>({
+    openSn: false,
+    vertical: 'top',
+    horizontal: 'center',
+    msg: '',
+    typeE: 'success'
+    // error warning info success
+  });
+  const { vertical, horizontal, openSn , msg , typeE } = state;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const snackClick = (newState: State) => () => {
+    setState({ ...newState, openSn: true });
+  };
+  const snackClose = () => {
+    setState({ ...state, openSn: false });
+  };
 
   return (
     <div id='Navbar' className="flrow acen">
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={openSn}
+        onClose={snackClose}
+        key={vertical + horizontal}
+        autoHideDuration={4000}
+      >
+        <Alert onClose={snackClose} severity={typeE} sx={{ width: '100%' }}>
+          {msg}
+        </Alert>
+      </Snackbar>
+
       <p>BlueRooms</p>
 
       <div className="options flrow f1 acen">
