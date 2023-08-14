@@ -11,7 +11,7 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
-    filter: brightness(50%);
+    filter: brightness(65%);
     z-index: -10;
 }
 

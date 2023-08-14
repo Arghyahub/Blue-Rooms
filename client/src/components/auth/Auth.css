@@ -20,6 +20,7 @@
     color: #fafafa;
     font-size: 3rem;
     text-shadow: 2px 2px 4px #000000;
+    text-align: center;
 }
 
 .auth-div {
@@ -34,7 +35,7 @@
     text-align: center;
 }
 .auth-p {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 
@@ -43,7 +44,7 @@
 }
 .auth-ip {
     width: 300px;
-    height: 33px;
+    height: 36px;
     background-color: #eeeefc;
     outline: none;
     border: none;

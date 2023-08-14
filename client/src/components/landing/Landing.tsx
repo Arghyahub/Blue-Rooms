@@ -5,8 +5,8 @@ import { Link , NavigateFunction, useNavigate } from "react-router-dom"
 import { socials , jsonUser } from "./LandingTypes";
 
 // -----------IMP-------------
-const bgURL:string = "https://picsum.photos/seed/picsum/2400/1080" ;
-const iconURL:string = "https://loremicon.com/ngon/128/128/939346400536/jpg" ;
+const bgURL:string = "/blue-min.jpg" ;
+const iconURL:string = "/logo.png" ;
 const backend:string = "http://localhost:8000" ;
 // -------------------------
 
@@ -32,7 +32,7 @@ const Navbar = ():JSX.Element => {
     return (
       <div className="home-nav flrow acen">
         <img src={iconURL} alt="Icon" className='home-icon' />
-        <h4>Recruit</h4>
+        <h4>BlueRooms</h4>
       </div>
     )
 }
@@ -162,7 +162,7 @@ const Landing = ():JSX.Element => {
       <div id="about" className="product flcol jcen acen">
         <h1>Out Platform</h1>
         <p className="prod-txt">Our motive is to build an app that brings people together, makes chatting together much more fun and work with each other</p>
-        <p className="prod-txt">Engaging rooms, games and many more interesting features</p>
+        <p className="prod-txt">With engaging rooms, games and many more interesting features</p>
         <p className="prod-about">Join today and be a part of the the most fun platform</p>
       </div>
 

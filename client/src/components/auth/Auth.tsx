@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import {JsonMsg, loginParam, signupParam} from './AuthTypes'
 
 //--------IMPORTANT-------
-const bgURL = "https://picsum.photos/seed/picsum/600/800" ;
-const iconURL = "https://loremicon.com/ngon/128/128/939346400536/jpg" ;
+const bgURL = "/authImg/blue.jpg" ;
+const iconURL = "/logo.png" ;
 const backend = "http://localhost:8000" ;
 // -----------------------
 
@@ -84,14 +84,14 @@ const Auth = ():JSX.Element => {
 
       <div className='h100 w50 img-div flrow'>
         <img className='auth-img' src={bgURL} alt="stockimg" />
-        <div className="img-txt">Practice Stock Trading For Free</div>
+        <div className="img-txt">Join blue rooms and start Chatting now!</div>
       </div>
 
       <div className='h100 w50 auth-div flcol  jcen acen'>
         <img src={iconURL} alt="icon" className="auth-icon" />
         <div className="auth-text">
-          <h1>Hello Trader</h1>
-          <p className='auth-p'>Welcome to TradeBull, your one stop solution to learn trading</p>
+          <h1>Get started</h1>
+          <p className='auth-p'>Welcome to BlueRooms</p>
 
           {newUser ? (
             <>
