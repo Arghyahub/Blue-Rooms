@@ -7,6 +7,23 @@ import { roomProp, chatDatas } from './groupstypes'
 
 const backend: string = 'http://localhost:8000';
 
+import * as React from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+type AlertColor = 'success' | 'info' | 'warning' | 'error';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+interface State extends SnackbarOrigin {
+  open?: boolean;
+  msg: string;
+  typeE: AlertColor | undefined;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
   const [OpenChat, setOpenChat] = useRecoilState(currOpenChat);
@@ -19,6 +36,23 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
   const [LoadChat, setLoadChat] = useRecoilState(loadingChat) ;
 
   const token = localStorage.getItem('jwt') as string;
+
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    msg: '',
+    typeE: 'success'
+    // error warning info success
+  });
+  const { vertical, horizontal, open , msg , typeE } = state;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleClick = (newState: State) => () => {
+    setState({ ...newState, open: true });
+  };
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   const handleCurrOpenChat = async (roomid:string , roomName:string , notify:boolean): Promise<void> => {
     setSmallScreenChat(true) ;
@@ -63,6 +97,7 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
       }
     }
     catch (err) {
+      setState({ vertical: 'top', horizontal: 'center' , msg: 'Sever Error, Check connection', typeE: 'error' , open: true}) ;
     console.log('error in getting chats', err);
     }
     setLoadChat(false) ;
@@ -70,6 +105,17 @@ const Groups: React.FC<roomProp> = ({ rooms, name }): JSX.Element => {
 
 return (
   <div id='Groups' className={`flcol groups ${SmallScreenChat? 'hide-groups':'show-full'}`}>
+    <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+        autoHideDuration={4000}
+      >
+        <Alert onClose={handleClose} severity={typeE} sx={{ width: '100%' }}>
+          {msg}
+        </Alert>
+      </Snackbar>
     {rooms.map((elem, ind) => (
       <div key={`chats${ind}`} className='chat-card curpoi' onClick={() => handleCurrOpenChat(elem.roomid , elem.roomName , elem.notify)}>
         <p>{elem.roomName}</p>

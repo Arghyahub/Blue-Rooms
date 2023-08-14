@@ -1,3 +1,3 @@
 # Things to do
 
-- [ ] Chat, SendChat, Group Snackbar left
+- Group Snackbar left

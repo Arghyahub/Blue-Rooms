@@ -9,6 +9,23 @@ import { currOpenChat , userRooms } from "../../Atom";
 
 const backend = "http://localhost:8000" ;
 
+import * as React from 'react';
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+type AlertColor = 'success' | 'info' | 'warning' | 'error';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+interface State extends SnackbarOrigin {
+  open?: boolean;
+  msg: string;
+  typeE: AlertColor | undefined;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let socket:any;
 
@@ -17,6 +34,23 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
   const [currChat, setCurrChat] = useRecoilState(currOpenChat) ;
   const token = localStorage.getItem('jwt') as string ;
   const [UserJoinedRooms,setUserJoinedRooms] = useRecoilState(userRooms) ;
+
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    msg: '',
+    typeE: 'success'
+    // error warning info success
+  });
+  const { vertical, horizontal, open , msg , typeE } = state;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleClick = (newState: State) => () => {
+    setState({ ...newState, open: true });
+  };
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   useEffect(() => {
     socket = io(backend) ;
@@ -107,6 +141,7 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       const json:jsonResp = await res.json() ;
       if (json.err){
         // allert the user
+        setState({ vertical: 'top', horizontal: 'center' , msg: json.err, typeE: 'error' , open: true}) ;
         return;
       }
 
@@ -120,6 +155,7 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
       socket.emit('new-chat',({chatId: currChat._id, sender: name, msg: newChatMsg})) ;
     }
     catch(err) {
+      setState({ vertical: 'top', horizontal: 'center' , msg: 'Internal Error, Check internet', typeE: 'error' , open: true}) ;
       console.log("error : ",err) ;
     }
   }
@@ -140,6 +176,17 @@ const SendChat:React.FC<sendChatProp> = ({name}) => {
 
   return (
     <>
+    <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+        autoHideDuration={4000}
+      >
+        <Alert onClose={handleClose} severity={typeE} sx={{ width: '100%' }}>
+          {msg}
+        </Alert>
+      </Snackbar>
     {currChat.selected? (
       <form onSubmit={handleChatSend} id="SendChat" className="flrow">
         <input type="text" name="chatInput" className="chat-ip"/>
