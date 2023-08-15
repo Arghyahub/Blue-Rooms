@@ -44,9 +44,11 @@ const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
               <p className='head-name'>{selectedChat.name}</p>
             </div>
             {selectedChat.user_msg.map((elem,ind) => (
-              <div key={`chatO${ind}`} className={`flcol ${(elem.user===name)? 'myChat':''}`} >
-                <p>{`${elem.user}`}</p>
-                <p>{`${elem.msg}`}</p>
+              <div key={`chatO${ind}`} className={`flcol ${(elem.user===name)? 'myChat':'otherChat'}`} >
+                {selectedChat.group && (
+                  <p>{`${elem.user}`}</p>
+                )}
+                <p className='chatMsg'>{`${elem.msg}`}</p>
               </div>
             ))}
           </div>

@@ -7,6 +7,25 @@
 
 .myChat {
     align-items: flex-end;
+    margin-right: min(3%,8px) ;
+    margin: 4px 6px 0 0;
+}
+
+.myChat > .chatMsg {
+    background-color: #A2FF86;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.6rem 0 0.6rem 0.6rem;
+}
+
+.otherChat {
+    align-items: flex-start;
+    margin-left: min(3%,8px) ;
+    margin: 4px 0 0 6px;
+}
+.otherChat > .chatMsg {
+    background-color: #79E0EE;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0 0.6rem 0.6rem 0.6rem;
 }
 
 .head-name {
