@@ -24,6 +24,10 @@ const e = require('express');
 // Connect DB
 connectDB('testDB')
 
+app.get("/",(req,res)=> {
+    res.send("Running fine") ;
+})
+
 app.post('/signup',async (req,res) => {
     const { name, email, passwd } = req.body;
     if(!name || !email || !passwd) {
