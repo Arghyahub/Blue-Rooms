@@ -1,6 +1,6 @@
 #Groups {
-    border: 1px solid red;
     overflow-y: scroll;
+    background-color: #F5F5F6;
 }
 
 .groups {
@@ -9,12 +9,11 @@
 
 .chat-card {
     height: 80px;
-    border: 1px solid yellow;
+    border-bottom: 1px solid #212426;
 }
 
-.hide-groups {
-}
-.show-full {
+.group-name {
+    margin: 5px 0 0 5px;
 }
 
 @media only screen and (max-width: 600px) {

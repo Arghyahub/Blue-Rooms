@@ -37,7 +37,7 @@ const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
       ): (
         selectedChat.selected? (
           <div className="selected-chat flcol">
-            <div className="chat-options border flrow">
+            <div className="chat-options flrow">
               <div className={`curpoi ${SmallScreenChat? 'hide-back':''}`}>
                 <ArrowBackIcon  onClick={() => setSmallScreenChat(false)} />
               </div>
@@ -51,7 +51,9 @@ const Chat:React.FC<chatProp> = ({name}):JSX.Element => {
             ))}
           </div>
         ): (
-          <p>Start a chat by clicking on the chat</p>
+          <div className="flrow jcen h100 w100">
+            <p className='no-chat'>Start a chat by clicking on the chat</p>
+          </div>
         )
       )}
 

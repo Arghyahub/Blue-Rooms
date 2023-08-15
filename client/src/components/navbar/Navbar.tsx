@@ -15,6 +15,7 @@ import Popover from '@mui/material/Popover';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const backend:string = "http://localhost:8000" ;
+const iconURL:string = "/logo.png" ;
 
 import * as React from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
@@ -143,7 +144,7 @@ const Navbar = (): JSX.Element => {
         </Alert>
       </Snackbar>
 
-      <p>BlueRooms</p>
+      <p className="flrow acen nav-home"><img src={iconURL} alt="Icon" className="bg-icons" /> BlueRooms</p>
 
       <div className="options flrow f1 acen">
         {FriendData.name && (
@@ -157,11 +158,11 @@ const Navbar = (): JSX.Element => {
               horizontal: 'left',
             }}
             style={{
-              left: "-1.3rem",
-              top: "0.6rem"
+              left: "-60px",
+              top: "10px"
             }}
           >
-              <form onSubmit={addFriend} className="flrow">
+              <form onSubmit={addFriend} className="findFriend flrow">
                 <p>{FriendData.name}</p>
                 <button type="submit" className="addf-btn">
                   <AddCircleIcon className="curpoi" style={{color: "aquamarine"}} />
@@ -171,14 +172,14 @@ const Navbar = (): JSX.Element => {
         )}
 
         <form onSubmit={searchUser} className='flrow acen'>
-          <TextField id="standard-basic" label="Search name..." variant="standard" name='searchName' />
+          <TextField id="standard-basic" label="Search name..." variant="standard" name='searchName'/>
           <button type='submit' className='search-btn curpoi' onClick={handleClick}>
             <SearchIcon />
           </button>
         </form>
 
-        <Badge badgeContent={NotificationCount} color="primary">
-          <NotificationsIcon color="action" />
+        <Badge badgeContent={NotificationCount} color="primary" >
+          <NotificationsIcon color="action" style={{color: '#212426'}} />
         </Badge>
         <PersonIcon />
       </div>

@@ -118,7 +118,7 @@ return (
       </Snackbar>
     {rooms.map((elem, ind) => (
       <div key={`chats${ind}`} className='chat-card curpoi' onClick={() => handleCurrOpenChat(elem.roomid , elem.roomName , elem.notify)}>
-        <p>{elem.roomName}</p>
+        <p className='group-name'>{elem.roomName}</p>
         {elem.notify && (
           <NotificationsActiveIcon/>
         )}
