@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect , useState } from "react";
 import "./Landing.css"
 
 import { Link , NavigateFunction, useNavigate } from "react-router-dom"
 import { socials , jsonUser } from "./LandingTypes";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 // -----------IMP-------------
 const bgURL:string = "/blue-min.jpg" ;
@@ -62,6 +63,7 @@ const Contact = ():JSX.Element => {
 
 const Landing = ():JSX.Element => {
   const navigate:NavigateFunction = useNavigate() ;
+  const [Loading, setLoading] = useState<boolean>(false) ;
 
   const [state, setState] = React.useState<State>({
     open: false,
@@ -109,7 +111,9 @@ const Landing = ():JSX.Element => {
 
   useEffect(() => {
     const handleLogged = async ():Promise<void> => {
+      setLoading(true) ;
       const data = await getData() ;
+      setLoading(false) ;
       // console.log('Landing' + data) ;
       if (data===null || data.token===false){ return; }
       if (data.token===true && data.valid===false) {
@@ -124,6 +128,7 @@ const Landing = ():JSX.Element => {
 
       navigate('/home') ;
     }
+
     handleLogged() ;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -132,41 +137,55 @@ const Landing = ():JSX.Element => {
 
   return (
     <div id="Home" className="h100">
-      <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
-        onClose={handleClose}
-        key={vertical + horizontal}
-        autoHideDuration={4000}
-      >
-        <Alert onClose={handleClose} severity={typeE} sx={{ width: '100%' }}>
-          {msg}
-        </Alert>
-      </Snackbar>
-      <Navbar />
-
-      {/* <button onClick={handleClick({ vertical: 'top', horizontal: 'center' , msg: 'Data invalidated', typeE: 'error' })}>Click Try</button> */}
-      
-      <div className="flcol homebg-div jcen acen">
-        <img src={bgURL} alt="Home" className="homebg abs"/>
-        <h1 className="home-head">Welcome to Blue Rooms</h1>
-        <p className="home-txt">Your personal chat and fun rooms</p>
-
-        <div className="flrow join-opt acen">
-          <Link to={'/auth'} onClick={() => localStorage.removeItem('jwt')} className="homejoin-btn grsha">Signup</Link>
-          Or
-          <Link to={'/auth'} onClick={() => localStorage.removeItem('jwt')} className="homejoin-btn grsha">Login</Link>
+      {Loading? (
+        <div className="h100 w100 flrow jcen acen">
+          <PropagateLoader
+          color={'#26E7FE'}
+          loading={Loading}
+          size={30}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+          />
         </div>
-      </div>
-
-      <div id="about" className="product flcol jcen acen">
-        <h1>Out Platform</h1>
-        <p className="prod-txt">Our motive is to build an app that brings people together, makes chatting together much more fun and work with each other</p>
-        <p className="prod-txt">With engaging rooms, games and many more interesting features</p>
-        <p className="prod-about">Join today and be a part of the the most fun platform</p>
-      </div>
-
-      <Contact />
+      ): (
+        <>
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          onClose={handleClose}
+          key={vertical + horizontal}
+          autoHideDuration={4000}
+        >
+          <Alert onClose={handleClose} severity={typeE} sx={{ width: '100%' }}>
+            {msg}
+          </Alert>
+        </Snackbar>
+        <Navbar />
+  
+        {/* <button onClick={handleClick({ vertical: 'top', horizontal: 'center' , msg: 'Data invalidated', typeE: 'error' })}>Click Try</button> */}
+        
+        <div className="flcol homebg-div jcen acen">
+          <img src={bgURL} alt="Home" className="homebg abs"/>
+          <h1 className="home-head">Welcome to Blue Rooms</h1>
+          <p className="home-txt">Your personal chat and fun rooms</p>
+  
+          <div className="flrow join-opt acen">
+            <Link to={'/auth'} onClick={() => localStorage.removeItem('jwt')} className="homejoin-btn grsha">Signup</Link>
+            Or
+            <Link to={'/auth'} onClick={() => localStorage.removeItem('jwt')} className="homejoin-btn grsha">Login</Link>
+          </div>
+        </div>
+  
+        <div id="about" className="product flcol jcen acen">
+          <h1>Out Platform</h1>
+          <p className="prod-txt">Our motive is to build an app that brings people together, makes chatting together much more fun and work with each other</p>
+          <p className="prod-txt">With engaging rooms, games and many more interesting features</p>
+          <p className="prod-about">Join today and be a part of the the most fun platform</p>
+        </div>
+  
+        <Contact />
+        </>
+      )}
 
     </div>
   )
