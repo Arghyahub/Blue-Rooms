@@ -3,7 +3,7 @@ const MONGOURI = process.env.MONGO_SEC ;
 const mongoose = require('mongoose') ;
 
 const connectDB= (dbName) => {
-    mongoose.connect(`${MONGOURI}${dbName}`, {
+    mongoose.connect(`${MONGOURI}`, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
