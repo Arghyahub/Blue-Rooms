@@ -218,7 +218,7 @@ const server = app.listen(port,()=> {
 const io = require('socket.io')(server, {
     pingTimeout: 120000,
     cors: {
-        origin: "https://blue-rooms.vercel.app/"
+        origin: "https://blue-rooms.vercel.app"
     }
 })
 
