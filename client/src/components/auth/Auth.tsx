@@ -7,7 +7,7 @@ import {JsonMsg, loginParam, signupParam} from './AuthTypes'
 //--------IMPORTANT-------
 const bgURL = "/authImg/blue.jpg" ;
 const iconURL = "/logo.png" ;
-const backend = "http://localhost:8000" ;
+const backend = import.meta.env.VITE_BACKEND ;
 // -----------------------
 
 const Auth = ():JSX.Element => {

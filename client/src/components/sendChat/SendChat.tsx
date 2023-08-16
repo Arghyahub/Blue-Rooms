@@ -7,7 +7,7 @@ import "./SendChat.css"
 import SendIcon from '@mui/icons-material/Send';
 import { currOpenChat , userRooms } from "../../Atom";
 
-const backend = "http://localhost:8000" ;
+const backend = import.meta.env.VITE_BACKEND ;
 
 import * as React from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';

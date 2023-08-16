@@ -8,7 +8,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 // -----------IMP-------------
 const bgURL:string = "/blue-min.jpg" ;
 const iconURL:string = "/logo.png" ;
-const backend:string = "http://localhost:8000" ;
+const backend:string = import.meta.env.VITE_BACKEND ;
 // -------------------------
 
 

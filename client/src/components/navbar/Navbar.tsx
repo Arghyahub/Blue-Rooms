@@ -14,7 +14,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import Popover from '@mui/material/Popover';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-const backend:string = "http://localhost:8000" ;
+const backend:string = import.meta.env.VITE_BACKEND ;
 const iconURL:string = "/logo.png" ;
 
 import * as React from 'react';

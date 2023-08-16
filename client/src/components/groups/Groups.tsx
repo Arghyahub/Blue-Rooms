@@ -5,7 +5,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import './Groups.css'
 import { roomProp, chatDatas } from './groupstypes'
 
-const backend: string = 'http://localhost:8000';
+const backend: string = import.meta.env.VITE_BACKEND;
 
 import * as React from 'react';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
