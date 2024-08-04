@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id            Int            @id @default(autoincrement())
+  is_verified   Boolean        @default(false)
+  otp           String?
+  name          String
+  email         String         @unique
+  password      String
+  avatar        Int            @default(1)
+  about         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  Friend_user   Friends[]      @relation("user")
+  Friend_friend Friends[]      @relation("friend")
+  GroupMembers  GroupMembers[]
+  Chats         Chats[]
+  Tags          Tags[]
+}
+
+model Groups {
+  id           Int            @id @default(autoincrement())
+  personal     Boolean        @default(true)
+  name         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  GroupMembers GroupMembers[]
+  Chats        Chats[]
+  Friends      Friends[]
+}
+
+model GroupMembers {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  group_id  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  group     Groups   @relation(fields: [group_id], references: [id])
+  user      Users    @relation(fields: [user_id], references: [id])
+}
+
+model Chats {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  group_id  Int
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  group     Groups   @relation(fields: [group_id], references: [id])
+  user      Users    @relation(fields: [user_id], references: [id])
+}
+
+model Friends {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  friend_id Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  group_id  Int
+  user      Users    @relation(name: "user", fields: [user_id], references: [id])
+  friend    Users    @relation(name: "friend", fields: [friend_id], references: [id])
+  group     Groups   @relation(fields: [group_id], references: [id])
+}
+
+model Tags {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  tag       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      Users    @relation(fields: [user_id], references: [id])
+}
