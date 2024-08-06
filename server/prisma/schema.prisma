@@ -67,6 +67,7 @@ model Friends {
   id        Int      @id @default(autoincrement())
   user_id   Int
   friend_id Int
+  blocked   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   group_id  Int

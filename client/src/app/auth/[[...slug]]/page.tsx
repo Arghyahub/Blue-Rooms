@@ -108,17 +108,17 @@ const Auth = ({ params }: Props) => {
   };
 
   return (
-    <div className="flex flex-row justify-center items-center p-10 rounded-md w-full h-screen">
-      <div className="flex w-full h-full">
+    <div className="flex md:flex-row flex-col justify-center items-center p-10 rounded-md w-full h-screen">
+      <div className="flex w-72 sm:w-96 md:w-full h-72 sm:h-96 md:h-full">
         <Image
           src={"/svgs/authimg.jpg"}
           alt="Auth background"
           width={2000}
           height={1400}
-          className="object-cover"
+          className="md:object-cover"
         />
       </div>
-      <div className="flex flex-col justify-center items-center w-full h-full">
+      <div className="flex flex-col md:justify-center items-center w-full h-full">
         {page == "login" ? (
           <form
             onSubmit={handlelogin}

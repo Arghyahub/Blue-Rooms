@@ -19,7 +19,7 @@ const UpdateDetails = () => {
   useEffect(() => {
     if (user) {
       setAvatar(user.avatar || 1);
-      setTags(user?.tags || ["hot", "cute", "sweet"]);
+      setTags(user?.tags?.length ? user.tags : ["hot", "cute", "sweet"]);
     }
   }, [user]);
 

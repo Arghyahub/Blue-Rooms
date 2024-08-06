@@ -25,6 +25,7 @@ export const Protected = ({ children }: Props) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        cache: "no-store",
       });
       const data = await res.json();
       if (res.ok) setUser(data.data);

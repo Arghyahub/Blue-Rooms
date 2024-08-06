@@ -8,7 +8,8 @@ export interface UserType {
   email: string;
   avatar: number;
   about: string;
-  tags?: string[];
+  tags: string[];
+  friends: number[];
 }
 
 interface UserStoreType {

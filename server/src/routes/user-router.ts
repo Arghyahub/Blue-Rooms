@@ -1,107 +1,112 @@
-import { user, UserCompleteType } from './../db/db-types.d'
-import { Router, Request, Response } from 'express'
-import authReq from '../middlewares/auth-types'
-import authMiddleware from '../middlewares/auth-middleware'
-import prisma from '../db/db'
-const router = Router()
+import { user, UserCompleteType } from "./../db/db-types.d";
+import { Router, Request, Response } from "express";
+import authReq from "../middlewares/auth-types";
+import authMiddleware from "../middlewares/auth-middleware";
+import prisma from "../db/db";
+const router = Router();
 
 interface updateDetailsRequest extends authReq {
   body: {
-    avatar?: number
-    about?: string
-    tags?: string[]
-  }
+    avatar?: number;
+    about?: string;
+    tags?: string[];
+  };
 }
 
 interface newChatRequest extends authReq {
   body: {
-    friend_id?: number
-  }
+    friend_id?: number;
+  };
 }
 
 interface getChatGroupIdReq extends authReq {
   body: {
-    group_id?: number
-  }
+    group_id?: number;
+  };
 }
 
 interface postChatReq extends authReq {
   body: {
-    group_id?: number
-    message?: string
-  }
+    group_id?: number;
+    message?: string;
+  };
 }
 
 interface searchUsersReq extends authReq {
   body: {
-    query?: string
-  }
+    query?: string;
+  };
 }
 
-router.get('/me', authMiddleware, async (req: authReq, res: Response) => {
+router.get("/me", authMiddleware, async (req: authReq, res: Response) => {
   try {
     const tags = await prisma.tags.findMany({
       where: { user_id: req.user.id },
       select: { tag: true },
-    })
-    const user: UserCompleteType = req.user
-    user.tags = tags.map((tag) => tag.tag)
-    return res.status(200).json({ data: user })
+    });
+    const friends = await prisma.friends.findMany({
+      where: { user_id: req.user.id },
+      select: { friend_id: true },
+    });
+    const user: UserCompleteType = req.user;
+    user.tags = tags.map((tag) => tag.tag);
+    user.friends = friends.map((friend) => friend.friend_id);
+    return res.status(200).json({ data: user });
   } catch (error) {
-    console.log('==user-router==', error)
-    res.status(500).json({ message: 'Internal server error' })
+    console.log("==user-router==", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-})
+});
 
-router.put('/update-details', async (req: updateDetailsRequest, res) => {
+router.put("/update-details", async (req: updateDetailsRequest, res) => {
   try {
-    const user = req.user
-    const { avatar, about, tags } = req.body
+    const user = req.user;
+    const { avatar, about, tags } = req.body;
 
     if (!avatar || !about || !tags)
-      return res.status(500).json({ message: 'All fields not provided' })
+      return res.status(500).json({ message: "All fields not provided" });
 
-    await prisma.tags.deleteMany({ where: { user_id: user.id } })
+    await prisma.tags.deleteMany({ where: { user_id: user.id } });
     console.log(
-      'here',
-      tags.map((tag) => ({ user_id: user.id, tag })),
-    )
+      "here",
+      tags.map((tag) => ({ user_id: user.id, tag }))
+    );
     const updateTags = prisma.tags.createMany({
       data: tags.map((tag) => ({ user_id: user.id, tag })),
-    })
+    });
     const updateDetail = prisma.users.update({
       where: { id: user.id },
       data: { avatar, about },
       select: {
         id: true,
       },
-    })
+    });
 
-    const [a, b] = await Promise.all([updateTags, updateDetail])
+    const [a, b] = await Promise.all([updateTags, updateDetail]);
 
-    console.log(a, b)
+    console.log(a, b);
 
-    res.json({ message: 'Details updated' })
+    res.json({ message: "Details updated" });
   } catch (error) {
-    console.log('==update-details==\n', error)
-    res.status(500).json({ message: 'Internal server error' })
+    console.log("==update-details==\n", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-})
+});
 
-router.post('/new-chat', async (req: newChatRequest, res) => {
+router.post("/new-chat", async (req: newChatRequest, res) => {
   try {
-    const friend_id = req.body.friend_id
+    const friend_id = req.body.friend_id;
     if (!friend_id) {
-      console.log('Friend Id not provided')
-      return res.json({ message: 'Friend Id not provided' })
+      console.log("Friend Id not provided");
+      return res.json({ message: "Friend Id not provided" });
     }
     const friend_user = await prisma.users.findUnique({
       where: { id: friend_id },
       select: { name: true },
-    })
+    });
     if (!friend_user) {
-      console.log('User friend not found')
-      return res.json({ message: 'User friend not found' })
+      console.log("User friend not found");
+      return res.json({ message: "User friend not found" });
     }
 
     // check if they are already friends
@@ -113,10 +118,10 @@ router.post('/new-chat', async (req: newChatRequest, res) => {
       select: {
         group: true,
       },
-    })
+    });
     if (isFriend) {
-      console.log('Already friends')
-      return res.json({ message: 'Already friends', data: isFriend?.group })
+      console.log("Already friends");
+      return res.json({ message: "Already friends", data: isFriend?.group });
     }
 
     // if not, check if a group exist from friend to user else create a group
@@ -130,7 +135,7 @@ router.post('/new-chat', async (req: newChatRequest, res) => {
           group: true,
         },
       })
-    )?.group
+    )?.group;
 
     // If group doesn't exist, create a new group
     if (!group) {
@@ -145,7 +150,7 @@ router.post('/new-chat', async (req: newChatRequest, res) => {
             },
           },
         },
-      })
+      });
     }
 
     // Add friends
@@ -155,41 +160,22 @@ router.post('/new-chat', async (req: newChatRequest, res) => {
         friend_id: friend_id,
         group_id: group.id,
       },
-    })
+    });
 
     // return group
-    return res.status(201).json({ data: group })
+    return res.status(201).json({ data: group });
   } catch (error) {
-    console.log('==new-chat==\n', error)
-    res.status(500).json({ message: 'Internal server error' })
+    console.log("==new-chat==\n", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-})
+});
 
-router.get('/get-all-groups', async (req: authReq, res) => {
-  try {
-    const group = await prisma.groups.findMany({
-      where: {
-        GroupMembers: {
-          some: {
-            user_id: req.user.id,
-          },
-        },
-      },
-    })
-
-    return res.json(group)
-  } catch (error) {
-    console.log('==get-all-groups==\n', error)
-    res.status(500).json({ message: 'Internal server error' })
-  }
-})
-
-router.post('/post-chat', async (req: postChatReq, res) => {
+router.post("/post-chat", async (req: postChatReq, res) => {
   try {
     if (!req.body.group_id || !req.body.message)
       return res
         .status(400)
-        .json({ message: 'Group Id or message not provided' })
+        .json({ message: "Group Id or message not provided" });
 
     // Check if the person is part of the group
     const isPart = await prisma.groupMembers.findFirst({
@@ -197,10 +183,10 @@ router.post('/post-chat', async (req: postChatReq, res) => {
         user_id: req.user.id,
         group_id: req.body.group_id,
       },
-    })
+    });
     if (!isPart) {
-      console.log('post-chat not part of group')
-      return res.status(400).json({ message: 'You are not part of the group' })
+      console.log("post-chat not part of group");
+      return res.status(400).json({ message: "You are not part of the group" });
     }
 
     await prisma.chats.create({
@@ -209,19 +195,19 @@ router.post('/post-chat', async (req: postChatReq, res) => {
         user_id: req.user.id,
         content: req.body.message,
       },
-    })
+    });
 
-    return res.status(201).json({ success: true, message: 'successful' })
+    return res.status(201).json({ success: true, message: "successful" });
   } catch (error) {
-    console.log('==post-chat==\n', error)
-    return res.status(500).json({ message: 'Internal server error' })
+    console.log("==post-chat==\n", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-})
+});
 
-router.post('/get-chat-groupId', async (req: getChatGroupIdReq, res) => {
+router.post("/get-chat-groupId", async (req: getChatGroupIdReq, res) => {
   try {
     if (!req.body.group_id)
-      return res.status(400).json({ message: 'Group Id not provided' })
+      return res.status(400).json({ message: "Group Id not provided" });
 
     const chats = await prisma.chats.findMany({
       where: {
@@ -230,32 +216,82 @@ router.post('/get-chat-groupId', async (req: getChatGroupIdReq, res) => {
           { group: { GroupMembers: { some: { user_id: req.user.id } } } },
         ],
       },
-    })
+    });
 
-    return res.status(200).json({ data: chats })
+    return res.status(200).json({ data: chats });
   } catch (error) {
-    console.log('==get-chat-groupId==\n', error)
-    return res.status(500).json({ message: 'Internal server error' })
+    console.log("==get-chat-groupId==\n", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-})
+});
 
-router.post('/search-users', async (req: searchUsersReq, res) => {
+router.post("/search", async (req: searchUsersReq, res) => {
   try {
     if (!req.body.query) {
-      return res.status(400).json({ message: 'Query not provided' })
+      return res.status(400).json({ message: "Query not provided" });
     }
 
     const users = await prisma.users.findMany({
       where: {
-        name: { startsWith: req.body.query, mode: 'insensitive' },
+        name: { startsWith: req.body.query, mode: "insensitive" },
+        id: {
+          not: req.user.id,
+        },
       },
-    })
+      select: {
+        id: true,
+        name: true,
+        about: true,
+        avatar: true,
+      },
+    });
 
-    return res.json({ data: users.map((user) => ({ ...user, password: '' })) })
+    const tagUsers = await prisma.users.findMany({
+      where: {
+        Tags: {
+          some: {
+            tag: { startsWith: req.body.query, mode: "insensitive" },
+          },
+        },
+        id: {
+          not: req.user.id,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        Tags: {
+          select: {
+            tag: true,
+            id: true,
+          },
+        },
+        about: true,
+        avatar: true,
+      },
+    });
+
+    const emailUsers = await prisma.users.findMany({
+      where: {
+        email: { startsWith: req.body.query, mode: "insensitive" },
+        id: {
+          not: req.user.id,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        about: true,
+        avatar: true,
+      },
+    });
+
+    return res.json({ users, tagUsers, emailUsers });
   } catch (error) {
-    console.log('==search-users==\n', error)
-    return res.status(500).json({ message: 'Internal server error' })
+    console.log("==search-users==\n", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-})
+});
 
-export default router
+export default router;
