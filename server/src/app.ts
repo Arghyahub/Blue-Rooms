@@ -10,12 +10,13 @@ app.use(cors());
 const PORT = process.env.PORT || 5000;
 
 // Routes here
-import { authRouter, userRouter, groupRouter } from "./routes";
+import { authRouter, userRouter, groupRouter, chatRouter } from "./routes";
 import authMiddleware from "./middlewares/auth-middleware";
 
 app.use("/auth", authRouter);
 app.use("/user", authMiddleware, userRouter);
 app.use("/group", authMiddleware, groupRouter);
+app.use("/chat", authMiddleware, chatRouter);
 
 // Routes
 app.get("/", (req, res) => {

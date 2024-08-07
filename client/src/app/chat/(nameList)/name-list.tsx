@@ -12,10 +12,8 @@ import AddFriendsBtn from "./add-btn";
 type Props = {};
 
 const NameList = () => {
-  const [Loading, setLoading] = useState(false);
   const user = useUserStore((state) => state.user);
   const groups = useChatStore((state) => state.groups);
-  const setGroups = useChatStore((state) => state.setGroups);
   const setSelectedChat = useSelectedChatStore(
     (state) => state.setSelectedChat
   );
@@ -41,11 +39,16 @@ const NameList = () => {
     return `/avatars/${friend?.user.avatar || 1}.jpeg`;
   };
 
+  const handleSelectChat = async (group: GroupsType) => {
+    setSelectedChat(group);
+  };
+
   return (
     <div className="relative flex flex-col gap-2 border-slate-400 px-2 py-2 border-r w-full h-full overflow-y-auto">
       {groups?.map((group) => (
         <div
           key={group.id}
+          onClick={() => handleSelectChat(group)}
           className="flex flex-col gap-4 border-slate-600 hover:bg-slate-50 hover:shadow-md px-3 py-2 border rounded-md cursor-pointer"
         >
           <div className="flex flex-row items-center gap-2">

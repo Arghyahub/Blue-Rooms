@@ -32,7 +32,6 @@ const ChatDashboard = () => {
   const fetchGroups = async () => {
     if (!localStorage.getItem("token")) return;
     try {
-      console.log("Fetching groups");
       const res = await fetch(`${BACKEND}/group/get-all-groups`, {
         method: "GET",
         headers: {
