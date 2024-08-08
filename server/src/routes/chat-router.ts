@@ -36,6 +36,17 @@ router.get("/:groupId", async (req: authReq, res) => {
           },
         },
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
     });
 
     return res.status(200).json({ data: chats });

@@ -7,6 +7,10 @@ export interface ChatType {
   content: string;
   createdAt: string;
   updatedAt: string;
+  user: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface GroupsType {
