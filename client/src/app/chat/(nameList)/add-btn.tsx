@@ -20,7 +20,7 @@ export default function AddFriendsBtn() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="ring-0 outline-none">
-          <button className="bg-blue-500 shadow-md p-1 rounded-full text-white">
+          <button className="bg-blue-500 hover:bg-blue-600 hover:shadow-lg p-1 rounded-full text-white">
             <PlusIcon size={35} />
           </button>
         </DropdownMenuTrigger>

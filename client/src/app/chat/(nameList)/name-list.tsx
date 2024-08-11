@@ -24,7 +24,7 @@ const NameList = () => {
   };
 
   return (
-    <div className="relative flex flex-col gap-2 border-slate-400 px-2 py-2 border-r w-full h-full overflow-y-auto">
+    <div className="relative flex flex-col gap-2 border-slate-400 px-2 py-2 pb-4 border-r w-full h-full overflow-y-auto">
       {groups?.map((group) => (
         <div
           key={group.id}

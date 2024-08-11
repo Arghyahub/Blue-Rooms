@@ -2,6 +2,8 @@
 import { useUserStore } from "@/states/user-state";
 import { useRouter } from "next/navigation";
 import config from "@/constants/config";
+import { useEffect, useState } from "react";
+import Loader from "../loader/loader";
 
 const BACKEND = config.server;
 
@@ -13,6 +15,7 @@ export const Protected = ({ children }: Props) => {
   const ISSERVER = typeof window === "undefined";
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+  const [Loading, setLoading] = useState(false);
   const router = useRouter();
 
   const getUserData = async () => {
@@ -20,6 +23,7 @@ export const Protected = ({ children }: Props) => {
     const token = localStorage.getItem("token");
     try {
       if (!token || token.length == 0) throw new Error("No token");
+      setLoading(true);
       const res = await fetch(`${BACKEND}/user/me`, {
         method: "GET",
         headers: {
@@ -28,8 +32,10 @@ export const Protected = ({ children }: Props) => {
         cache: "no-store",
       });
       const data = await res.json();
-      if (res.ok) setUser(data.data);
-      else throw Error(data?.message || "Error");
+      if (res.ok) {
+        setUser(data.data);
+        setLoading(false);
+      } else throw Error(data?.message || "Error");
     } catch (error) {
       localStorage.removeItem("token");
       setUser(null);
@@ -37,9 +43,12 @@ export const Protected = ({ children }: Props) => {
     }
   };
 
-  if (!user || user == null) {
-    getUserData();
-  } else {
-    return <>{children}</>;
-  }
+  useEffect(() => {
+    if (!user || user == null) {
+      getUserData();
+    }
+  }, []);
+
+  if (Loading) return <Loader />;
+  return <>{children}</>;
 };
