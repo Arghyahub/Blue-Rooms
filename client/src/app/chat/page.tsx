@@ -13,6 +13,7 @@ import {
 import config from "@/constants/config";
 import Loader from "@/components/loader/loader";
 import { usePathname, useRouter } from "next/navigation";
+import useSocketStore from "@/states/socket-state";
 
 const BACKEND = config.server;
 
@@ -25,9 +26,11 @@ const ChatDashboard = () => {
   const groups = useChatStore((state) => state.groups);
   const setGroups = useChatStore((state) => state.setGroups);
   const [Loading, setLoading] = useState(true);
-
-  const router = useRouter();
-  const pathname = usePathname();
+  const { initialize, cleanup, joinGroup } = useSocketStore((state) => ({
+    initialize: state.initialize,
+    cleanup: state.cleanup,
+    joinGroup: state.joinGroup,
+  }));
 
   const fetchGroups = async () => {
     if (!localStorage.getItem("token")) return;
@@ -42,6 +45,10 @@ const ChatDashboard = () => {
       });
       const { data }: { data: GroupsType[] } = await res.json();
       setGroups(data);
+
+      data.forEach((group) => {
+        joinGroup(group.id);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -55,11 +62,13 @@ const ChatDashboard = () => {
     setLoading(false);
   };
   useEffect(() => {
+    initialize();
     starter();
+
+    return () => {
+      cleanup();
+    };
   }, []);
-  // useEffect(() => {
-  //   starter();
-  // }, [pathname]);
 
   if (groups == null) return <Loader />;
   return (
@@ -79,7 +88,7 @@ const ChatDashboard = () => {
           </div>
           <div
             className={cn(
-              "w-3/4 h-full",
+              "w-3/4  h-[calc(100vh-62px)]",
               SelectedChat == null
                 ? "md:w-3/4 md:flex hidden"
                 : "md:w-3/4 w-full"

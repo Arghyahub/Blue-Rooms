@@ -84,6 +84,11 @@ router.post("/add-friend", async (req: AddFriendReq, res) => {
             user: {
               select: {
                 Tags: true,
+                id: true,
+                name: true,
+                avatar: true,
+                about: true,
+                email: true,
               },
             },
           },

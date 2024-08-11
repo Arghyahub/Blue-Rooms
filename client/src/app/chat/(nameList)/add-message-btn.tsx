@@ -5,9 +5,11 @@ import {
   useChatStore,
   useSelectedChatStore,
 } from "@/states/chat-state";
+import useSocketStore from "@/states/socket-state";
 import { useUserStore } from "@/states/user-state";
 import { Mail, UserPlus } from "lucide-react";
 import React from "react";
+import { Socket } from "socket.io-client";
 
 type Props = {
   searched_id: number;
@@ -23,6 +25,8 @@ const AddOrMessage = ({ searched_id, setOpen }: Props) => {
   const setSelectedChat = useSelectedChatStore(
     (state) => state.setSelectedChat
   );
+
+  const socket = useSocketStore((state) => state.socket);
 
   const handleText = () => {
     const group = groups?.find((group) => {
@@ -55,6 +59,10 @@ const AddOrMessage = ({ searched_id, setOpen }: Props) => {
 
       if (res.ok) {
         console.log(data.message);
+
+        // Join Group socket
+        socket.emit("join", data.data.id);
+
         // Set groups
         if (groups) setGroups([data.data, ...groups]);
         else setGroups([data.data]);

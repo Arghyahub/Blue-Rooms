@@ -66,8 +66,12 @@ router.post("/post-chat", async (req: postChatReq, res) => {
     // Check if the person is part of the group
     const isPart = await prisma.groupMembers.findFirst({
       where: {
-        user_id: req.user.id,
-        group_id: req.body.group_id,
+        group: {
+          id: req.body.group_id,
+        },
+        user: {
+          id: req.user.id,
+        },
       },
     });
     if (!isPart) {
@@ -77,9 +81,17 @@ router.post("/post-chat", async (req: postChatReq, res) => {
 
     await prisma.chats.create({
       data: {
-        group_id: req.body.group_id,
-        user_id: req.user.id,
         content: req.body.message,
+        group: {
+          connect: {
+            id: req.body.group_id,
+          },
+        },
+        user: {
+          connect: {
+            id: req.user.id,
+          },
+        },
       },
     });
 

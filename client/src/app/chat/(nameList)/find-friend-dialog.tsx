@@ -100,7 +100,7 @@ export function FindFriendDialog({ open, setOpen }: Props) {
       {/* <DialogTrigger asChild>
         <Button variant="outline">Edit Profile</Button>
       </DialogTrigger> */}
-      <DialogContent className="flex flex-col min-w-[80vw] min-h-[75vh]">
+      <DialogContent className="flex flex-col min-w-[80vw] min-h-[75vh] max-h-[75vh]">
         <DialogHeader>
           <DialogTitle>Search Profile</DialogTitle>
           <DialogDescription></DialogDescription>
