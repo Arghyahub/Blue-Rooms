@@ -4,9 +4,9 @@ import { UserType } from "@/states/user-state";
 export const resolveName = (group: GroupsType, user: UserType) => {
   if (group.personal) {
     const name = group.GroupMembers.find((member) => {
-      if (member.user_id !== user?.id) return member.user.name;
+      if (member.user_id !== user?.id) return member;
     });
-    return name;
+    return name?.user.name || "Friend";
   }
   return group.name;
 };
