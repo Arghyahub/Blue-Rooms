@@ -1,7 +1,0 @@
-
-@media screen and (max-width: 600px) {
-    .hide-chatWin {
-        width: 0% !important;
-        overflow: hidden;
-    }
-}

@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    container_name: postgresFASTDEP
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - data:/var/lib/postgresql/data
+
+  pg-admin:
+    container_name: adminerFASTDEP
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - '5050:5050'
+
+volumes:
+  data:
