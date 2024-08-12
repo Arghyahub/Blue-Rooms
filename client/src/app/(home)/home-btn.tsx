@@ -4,7 +4,7 @@ import { UserType } from "@/states/user-state";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-const BACKEND = config.server;
+const BACKEND = config.server as string;
 
 const HomeBtn = () => {
   const ISSERVER = typeof window === "undefined";
@@ -32,6 +32,10 @@ const HomeBtn = () => {
 
   useEffect(() => {
     getUserData();
+    try {
+      // blank call for the server to wake up
+      fetch(BACKEND);
+    } catch (error) {}
   }, []);
   return (
     <>

@@ -14,6 +14,7 @@ import { UserType, useUserStore } from "@/states/user-state";
 import { resolveDP, resolveName } from "@/utils/group-utils";
 import useSocketStore from "@/states/socket-state";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const BACKEND = config.server;
 
@@ -63,9 +64,11 @@ const ChatPanel = (props: Props) => {
         // Update entire groups object
         setGroups(cpyGroup);
       } else {
+        toast(data?.message || "Error fetching chat");
         console.log(data);
       }
     } catch (error) {
+      toast("Oops something went wrong");
       console.log(error);
     }
   };
@@ -108,6 +111,7 @@ const ChatPanel = (props: Props) => {
         }),
       });
     } catch (error) {
+      toast("Oops something went wrong");
       console.log(error);
     }
   };

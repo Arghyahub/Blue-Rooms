@@ -7,6 +7,7 @@ import { X, Plus, Router } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import config from "@/constants/config";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const BACKEND = config.server;
 
@@ -46,9 +47,10 @@ const UpdateDetails = () => {
         router.push("/chat");
       } else {
         console.log(data?.message);
-        return new Error(data?.message || "error fetching data");
+        toast.error(data?.message || "Error updating details");
       }
     } catch (error) {
+      toast.error("Error updating details");
       console.log(error);
     }
   };

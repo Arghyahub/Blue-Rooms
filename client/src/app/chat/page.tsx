@@ -14,6 +14,7 @@ import config from "@/constants/config";
 import Loader from "@/components/loader/loader";
 import { usePathname, useRouter } from "next/navigation";
 import useSocketStore from "@/states/socket-state";
+import { toast } from "sonner";
 
 const BACKEND = config.server;
 
@@ -49,14 +50,19 @@ const ChatDashboard = () => {
       data.forEach((group) => {
         joinGroup(group.id);
       });
+
+      if (!res.ok) {
+        // @ts-expect-error
+        toast(data?.message || "Oops something went wrong");
+        return;
+      }
     } catch (error) {
+      toast("Oops something went wrong");
       console.log(error);
     }
   };
 
   const starter = async () => {
-    // setGroups(null);
-    // setSelectedChat(null);
     setLoading(true);
     await fetchGroups();
     setLoading(false);

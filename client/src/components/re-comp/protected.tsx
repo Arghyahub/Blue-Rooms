@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import config from "@/constants/config";
 import { useEffect, useState } from "react";
 import Loader from "../loader/loader";
+import { toast } from "sonner";
 
-const BACKEND = config.server;
+const BACKEND = config.server as string;
 
 interface Props {
   children: React.ReactNode;
@@ -37,6 +38,7 @@ export const Protected = ({ children }: Props) => {
         setLoading(false);
       } else throw Error(data?.message || "Error");
     } catch (error) {
+      toast("Oops something went wrong");
       localStorage.removeItem("token");
       setUser(null);
       router.push("/auth/login");
@@ -47,6 +49,10 @@ export const Protected = ({ children }: Props) => {
     if (!user || user == null) {
       getUserData();
     }
+    try {
+      // blank call for the server to wake up
+      fetch(BACKEND);
+    } catch (error) {}
   }, []);
 
   if (Loading) return <Loader />;

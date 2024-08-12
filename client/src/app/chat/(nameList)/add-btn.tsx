@@ -33,11 +33,11 @@ export default function AddFriendsBtn() {
               <User className="mr-2 w-4 h-4" />
               <span>Add Friend</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
               <Users className="mr-2 w-4 h-4" />
               <span>Create Group</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

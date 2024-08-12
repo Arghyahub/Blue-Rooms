@@ -13,6 +13,7 @@ import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import AddOrMessage from "./add-message-btn";
 import { GroupsType, useSelectedChatStore } from "@/states/chat-state";
+import { toast } from "sonner";
 
 const BACKEND = config.server;
 
@@ -71,8 +72,13 @@ export function FindFriendDialog({ open, setOpen }: Props) {
       });
 
       const data = (await res.json()) as SearchResult;
-      setSearchedResult(data);
+      if (res.ok) {
+        setSearchedResult(data);
+      } else {
+        toast("Oops something went wrong");
+      }
     } catch (error) {
+      toast("Oops something went wrong");
       console.log(error);
     }
   };
@@ -145,7 +151,7 @@ export function FindFriendDialog({ open, setOpen }: Props) {
               Tags
             </button>
           </div>
-          <div className="flex flex-col gap-4 h-full overflow-y-auto">
+          <div className="flex flex-col gap-4 py-2 h-[47vh] overflow-y-auto">
             {SearchedResult === null && (
               <p className="text-sm">
                 You can search for a friend by their username or email or you
