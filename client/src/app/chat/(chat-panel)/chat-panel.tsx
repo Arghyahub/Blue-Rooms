@@ -197,7 +197,7 @@ const ChatPanel = (props: Props) => {
               <div
                 key={chat.id}
                 className={cn(
-                  "flex flex-col",
+                  "flex flex-col max-w-[45%] break-words",
                   chat.user_id === user?.id ? "self-end " : "self-start"
                 )}
               >

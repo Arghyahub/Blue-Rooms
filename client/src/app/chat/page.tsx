@@ -79,12 +79,12 @@ const ChatDashboard = () => {
   if (groups == null) return <Loader />;
   return (
     <Protected>
-      <div className="flex flex-col h-[100dvh]">
+      <div className="flex flex-col h-[100svh]">
         <Navbar />
         <div className="flex flex-row w-full h-full">
           <div
             className={cn(
-              "h-[calc(100dvh-62px)]",
+              "h-[calc(100svh-62px)]",
               SelectedChat == null
                 ? "md:w-1/4 w-full"
                 : "md:w-1/4 md:flex hidden"
@@ -94,7 +94,7 @@ const ChatDashboard = () => {
           </div>
           <div
             className={cn(
-              "w-3/4 h-[calc(100dvh-62px)]",
+              "w-3/4 h-[calc(100svh-62px)]",
               SelectedChat == null
                 ? "md:w-3/4 md:flex hidden"
                 : "md:w-3/4 w-full"
