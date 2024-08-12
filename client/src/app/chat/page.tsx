@@ -79,7 +79,7 @@ const ChatDashboard = () => {
   if (groups == null) return <Loader />;
   return (
     <Protected>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-[100dvh]">
         <Navbar />
         <div className="flex flex-row w-full h-full">
           <div
