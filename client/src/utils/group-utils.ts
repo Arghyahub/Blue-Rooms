@@ -3,7 +3,9 @@ import { UserType } from "@/states/user-state";
 
 export const resolveName = (group: GroupsType, user: UserType) => {
   if (group.personal) {
-    const name = group.name.split(" ").filter((name) => name !== user?.name);
+    const name = group.GroupMembers.find((member) => {
+      if (member.user_id !== user?.id) return member.user.name;
+    });
     return name;
   }
   return group.name;
