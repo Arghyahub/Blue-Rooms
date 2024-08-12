@@ -84,7 +84,7 @@ const ChatDashboard = () => {
         <div className="flex flex-row w-full h-full">
           <div
             className={cn(
-              "h-[calc(100vh-62px)]",
+              "h-[calc(100svh-62px)]",
               SelectedChat == null
                 ? "md:w-1/4 w-full"
                 : "md:w-1/4 md:flex hidden"
@@ -94,7 +94,7 @@ const ChatDashboard = () => {
           </div>
           <div
             className={cn(
-              "w-3/4 h-[calc(100vh-62px)]",
+              "w-3/4 h-[calc(100svh-62px)]",
               SelectedChat == null
                 ? "md:w-3/4 md:flex hidden"
                 : "md:w-3/4 w-full"
