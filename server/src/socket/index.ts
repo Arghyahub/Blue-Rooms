@@ -20,11 +20,18 @@ const initializeSocketConnection = (
       socket.join(roomid);
     });
 
-    socket.on("message", (groupId, senderId, senderName, message) => {
-      // socket.to(groupId).emit("receive-message", sender, message);
-      socket.broadcast
-        .to(groupId)
-        .emit("receive-message", groupId, senderId, senderName, message);
+    socket.on(
+      "message",
+      (recieverId, senderId, groupId, senderName, message) => {
+        // socket.to(groupId).emit("receive-message", sender, message);
+        socket
+          .to(recieverId)
+          .emit("receive-message", groupId, senderId, senderName, message);
+      }
+    );
+
+    socket.on("add-friend", (recieverId, group) => {
+      socket.to(recieverId).emit("new-group", group);
     });
   });
 };

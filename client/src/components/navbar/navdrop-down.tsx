@@ -42,9 +42,9 @@ export default function NavDropdownMenu() {
   const setUser = useUserStore((state) => state.setUser);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
     router.push("/");
+    setUser(null);
+    localStorage.removeItem("token");
   };
 
   return (

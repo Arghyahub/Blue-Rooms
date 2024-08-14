@@ -83,23 +83,23 @@ export function FindFriendDialog({ open, setOpen }: Props) {
     }
   };
 
-  const handleAddFriend = async (id: number) => {
-    try {
-      const res = await fetch(`${BACKEND}/group/add-friend`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ friend_id: id }),
-      });
+  // const handleAddFriend = async (id: number) => {
+  //   try {
+  //     const res = await fetch(`${BACKEND}/group/add-friend`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ friend_id: id }),
+  //     });
 
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     const data = await res.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <Dialog open={open} onOpenChange={(open) => setOpen(open)}>

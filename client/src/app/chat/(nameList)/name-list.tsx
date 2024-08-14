@@ -6,22 +6,42 @@ import {
 } from "@/states/chat-state";
 import { UserType, useUserStore } from "@/states/user-state";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddFriendsBtn from "./add-btn";
 import { resolveDate, resolveDP, resolveName } from "@/utils/group-utils";
+import useSocketStore from "@/states/socket-state";
 
 type Props = {};
 
 const NameList = () => {
   const user = useUserStore((state) => state.user);
-  const groups = useChatStore((state) => state.groups);
+  const { groups, setGroups } = useChatStore((state) => ({
+    groups: state.groups,
+    setGroups: state.setGroups,
+  }));
   const setSelectedChat = useSelectedChatStore(
     (state) => state.setSelectedChat
   );
+  const socket = useSocketStore((state) => state.socket);
 
   const handleSelectChat = async (group: GroupsType) => {
     setSelectedChat(group);
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("new-group", (group: GroupsType) => {
+        if (groups) setGroups([group, ...groups]);
+        else setGroups([group]);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("new-group");
+      }
+    };
+  }, [socket]);
 
   return (
     <div className="relative flex flex-col gap-2 border-slate-400 px-2 py-2 pb-4 border-r w-full h-full overflow-y-auto">

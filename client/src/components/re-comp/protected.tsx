@@ -5,6 +5,7 @@ import config from "@/constants/config";
 import { useEffect, useState } from "react";
 import Loader from "../loader/loader";
 import { toast } from "sonner";
+import useSocketStore from "@/states/socket-state";
 
 const BACKEND = config.server as string;
 
@@ -18,12 +19,13 @@ export const Protected = ({ children }: Props) => {
   const setUser = useUserStore((state) => state.setUser);
   const [Loading, setLoading] = useState(false);
   const router = useRouter();
+  const joinGroup = useSocketStore((state) => state.joinGroup);
 
   const getUserData = async () => {
     if (ISSERVER) return;
     const token = localStorage.getItem("token");
     try {
-      if (!token || token.length == 0) throw new Error("No token");
+      if (!token || token.length == 0) return;
       setLoading(true);
       const res = await fetch(`${BACKEND}/user/me`, {
         method: "GET",
@@ -35,9 +37,11 @@ export const Protected = ({ children }: Props) => {
       const data = await res.json();
       if (res.ok) {
         setUser(data.data);
+        joinGroup(data.data.id);
         setLoading(false);
       } else throw Error(data?.message || "Error");
     } catch (error) {
+      console.log(error);
       toast("Oops something went wrong");
       localStorage.removeItem("token");
       setUser(null);
@@ -52,9 +56,11 @@ export const Protected = ({ children }: Props) => {
     try {
       // blank call for the server to wake up
       fetch(BACKEND);
-    } catch (error) {}
+    } catch (error) {
+      toast("Oops something went wrong");
+    }
   }, []);
 
   if (Loading) return <Loader />;
-  return <>{children}</>;
+  else return <>{children}</>;
 };

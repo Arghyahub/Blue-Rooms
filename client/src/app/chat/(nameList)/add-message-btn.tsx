@@ -8,8 +8,9 @@ import {
 import useSocketStore from "@/states/socket-state";
 import { useUserStore } from "@/states/user-state";
 import { Mail, UserPlus } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Socket } from "socket.io-client";
+import { toast } from "sonner";
 
 type Props = {
   searched_id: number;
@@ -47,6 +48,7 @@ const AddOrMessage = ({ searched_id, setOpen }: Props) => {
 
   const handleAdd = async () => {
     try {
+      toast("Connecting you to the user");
       const res = await fetch(`${BACKEND}/group/add-friend`, {
         method: "POST",
         headers: {
@@ -60,8 +62,8 @@ const AddOrMessage = ({ searched_id, setOpen }: Props) => {
       if (res.ok) {
         console.log(data.message);
 
-        // Join Group socket
-        socket.emit("join", data.data.id);
+        // Notify of new group
+        socket.emit("add-friend", searched_id, data.data);
 
         // Set groups
         if (groups) setGroups([data.data, ...groups]);
@@ -73,6 +75,7 @@ const AddOrMessage = ({ searched_id, setOpen }: Props) => {
         // Close dialog
         setOpen(false);
       } else {
+        toast("Oops some error occurred");
         console.log(data);
       }
     } catch (error) {

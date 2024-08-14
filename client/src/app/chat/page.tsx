@@ -15,6 +15,7 @@ import Loader from "@/components/loader/loader";
 import { usePathname, useRouter } from "next/navigation";
 import useSocketStore from "@/states/socket-state";
 import { toast } from "sonner";
+import { useUserStore } from "@/states/user-state";
 
 const BACKEND = config.server;
 
@@ -32,6 +33,7 @@ const ChatDashboard = () => {
     cleanup: state.cleanup,
     joinGroup: state.joinGroup,
   }));
+  const user = useUserStore((state) => state.user);
 
   const fetchGroups = async () => {
     if (!localStorage.getItem("token")) return;
@@ -48,7 +50,7 @@ const ChatDashboard = () => {
       setGroups(data);
 
       data.forEach((group) => {
-        joinGroup(group.id);
+        if (group.personal === false) joinGroup(group.id);
       });
 
       if (!res.ok) {
@@ -67,6 +69,7 @@ const ChatDashboard = () => {
     await fetchGroups();
     setLoading(false);
   };
+
   useEffect(() => {
     initialize();
     starter();
@@ -74,9 +77,9 @@ const ChatDashboard = () => {
     return () => {
       cleanup();
     };
-  }, []);
+  }, [user]);
 
-  if (groups == null) return <Loader />;
+  if (Loading) return <Loader />;
   return (
     <Protected>
       <div className="flex flex-col h-[100svh]">

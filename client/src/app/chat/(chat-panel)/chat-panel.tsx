@@ -97,7 +97,17 @@ const ChatPanel = (props: Props) => {
     }
 
     try {
-      socket.emit("message", SelectedChat?.id, user?.id, user?.name, message);
+      const recieverId = SelectedChat?.GroupMembers.find(
+        (member) => member.user_id !== user?.id
+      )?.user_id;
+      socket.emit(
+        "message",
+        recieverId,
+        user?.id,
+        SelectedChat?.id,
+        user?.name,
+        message
+      );
       // db call
       const res = await fetch(`${BACKEND}/chat/post-chat`, {
         method: "POST",
@@ -123,7 +133,6 @@ const ChatPanel = (props: Props) => {
   useEffect(() => {
     chatsDiv.current?.scrollTo(0, chatsDiv.current.scrollHeight);
     socket.on("receive-message", (groupId, senderId, senderName, message) => {
-      // alert(message);
       if (!groups) return;
       const findGroup = groups.find((group) => group.id === groupId);
       if (!findGroup) return;
@@ -131,8 +140,11 @@ const ChatPanel = (props: Props) => {
       const currTime = new Date().toISOString();
 
       //1.  If Group.chat is not fetched, just put the group to the top
-      if (findGroup.chat === undefined) {
+      console.log(findGroup.chat);
+      if (!findGroup.chat) {
+        console.log("Chat not fetched");
         cpyGroups.unshift(findGroup);
+        setGroups(cpyGroups);
         return;
       }
 
