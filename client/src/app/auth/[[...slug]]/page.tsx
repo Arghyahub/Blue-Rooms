@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import config from "@/constants/config";
 import Image from "next/image";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const BACKEND = config.server;
 
@@ -26,6 +27,7 @@ const Auth = ({ params }: Props) => {
   const [errorText, setErrorText] = useState("");
   const [showPassword, setshowPassword] = useState(false);
   const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
 
   const page: string = params?.slug ? params.slug[0] : "signup";
   if (page !== "login" && page !== "signup") {
@@ -37,6 +39,7 @@ const Auth = ({ params }: Props) => {
   ) => {
     e.preventDefault();
     try {
+      setSubmitting(true);
       const name = e.target.name.value;
       const email = e.target.email.value;
       const password = e.target.password.value;
@@ -65,6 +68,8 @@ const Auth = ({ params }: Props) => {
     } catch (error) {
       console.log(error);
       setErrorText("Interal server error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -72,6 +77,7 @@ const Auth = ({ params }: Props) => {
     e: React.FormEvent<HTMLFormElement> & submitData
   ) => {
     try {
+      setSubmitting(true);
       e.preventDefault();
       const email = e.target.email.value;
       const password = e.target.password.value;
@@ -99,6 +105,8 @@ const Auth = ({ params }: Props) => {
     } catch (error) {
       console.log(error);
       setErrorText("Interal server error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -146,8 +154,14 @@ const Auth = ({ params }: Props) => {
                 )}
               </button>
             </div>
-            <button type="submit" className="bg-blue-500 p-2 text-white">
-              Login
+            <button
+              type="submit"
+              disabled={submitting}
+              className={cn("bg-blue-500 p-2 text-white", {
+                "bg-blue-600 cursor-not-allowed": submitting,
+              })}
+            >
+              {submitting ? "Logging in" : "Login"}
             </button>
             <p>
               Dont have an account?{" "}
@@ -197,9 +211,12 @@ const Auth = ({ params }: Props) => {
             </div>
             <button
               type="submit"
-              className="bg-blue-500 p-2 rounded-md text-white"
+              disabled={submitting}
+              className={cn("bg-blue-500 p-2 rounded-md text-white", {
+                "bg-blue-600 cursor-not-allowed": submitting,
+              })}
             >
-              Signup
+              {submitting ? "Signing Up" : "Signup"}
             </button>
             <p>
               Have an account?{" "}
